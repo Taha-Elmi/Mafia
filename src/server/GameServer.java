@@ -1,5 +1,8 @@
 package server;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 
 /**
@@ -10,11 +13,18 @@ import java.util.ArrayList;
  * @version 1
  */
 public class GameServer {
-    private static GameServer instance = null;
-    private ArrayList<Player> players;
+    private static final GameServer instance = new GameServer(10);
+    private static int port = 2000;
+    private static int numberOfPlayers;
+    private static ArrayList<Player> players;
 
-    private GameServer() {
+    private GameServer(int numberOfPlayers) {
+        GameServer.numberOfPlayers = numberOfPlayers;
         players = new ArrayList<>();
+    }
+
+    public static void main(String[] args) {
+        waitForClients();
     }
 
     /**
@@ -22,9 +32,35 @@ public class GameServer {
      * @return the instance
      */
     public static GameServer getInstance() {
-        if (instance == null)
-            instance = new GameServer();
         return instance;
+    }
+
+    /**
+     * This method will create connections with the clients
+     */
+    private static void waitForClients() {
+        ServerSocket welcomingSocket = null;
+        try {
+            welcomingSocket = new ServerSocket(port);
+        } catch (IOException e) {
+            System.err.println("The port " + port + " was not free. Trying the port " + (port + 1) + "...");
+            port++;
+            waitForClients();
+        }
+
+        for (int i = 0; i < numberOfPlayers; i++) {
+            Socket socket = null;
+            try {
+                socket = welcomingSocket.accept();
+            } catch (IOException e) {
+                System.err.println("There was an error in connecting to the client.");
+            }
+
+            Player player = new Player("PleaseDontChooseThisName");
+            players.add(player);
+            ClientHandler clientHandler = new ClientHandler(socket, player);
+            clientHandler.start();
+        }
     }
 
     /**

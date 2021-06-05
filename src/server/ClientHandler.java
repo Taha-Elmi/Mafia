@@ -12,7 +12,7 @@ import java.net.Socket;
  * @author Taha Emli
  * @version 1
  */
-public class ClientHandler implements Runnable{
+public class ClientHandler extends Thread{
     private Socket socket;
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
@@ -49,6 +49,7 @@ public class ClientHandler implements Runnable{
             }
 
             response = (GameServer.getInstance().checkName(name) ? "No" : "OK");
+            player.setUsername(name);
 
             try {
                 dataOutputStream.writeUTF(response);
