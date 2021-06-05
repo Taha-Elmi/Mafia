@@ -35,10 +35,11 @@ public class Client {
     }
 
     private static void setName() {
+        System.out.println("Enter a username for yourself:");
+
         String name;
         String response = "";
         do {
-            System.out.println("Enter a username for yourself:");
             name = scanner.nextLine();
             try {
                 dataOutputStream.writeUTF(name);
@@ -46,6 +47,11 @@ public class Client {
             } catch (IOException e) {
                 System.err.println("Couldn't send to the Server");
             }
+
+            if (!response.equals("OK"))
+                System.out.println("There is already another user with this username.\n" +
+                        "Please submit another name for yourself:");
+
         } while (!response.equals("OK"));
 
         System.out.println("You have been successfully entered the game with the username: " + name);
