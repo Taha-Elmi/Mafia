@@ -6,6 +6,12 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
+/**
+ * This class will handle everything that a client does on its system
+ *
+ * @author Taha Elmi
+ * @version 1
+ */
 public class Client {
     private static Socket socket;
     private static DataInputStream dataInputStream;
@@ -17,6 +23,10 @@ public class Client {
         while (connectToServer());
     }
 
+    /**
+     * This method will try to connect the client to a game server
+     * @return true if it could connect successfully and false otherwise
+     */
     private static boolean connectToServer() {
         System.out.println("Enter the ip of the server:");
         String ip = scanner.nextLine();
@@ -34,6 +44,10 @@ public class Client {
         }
     }
 
+    /**
+     * This method will set a name for the player.
+     * It also checks if the name is duplicate or not, using checkName method of the GameServer class
+     */
     private static void setName() {
         System.out.println("Enter a username for yourself:");
 

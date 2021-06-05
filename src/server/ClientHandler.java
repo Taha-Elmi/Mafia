@@ -5,6 +5,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+/**
+ * This class is designed to run the server in multi-thread mode.
+ * Every object of this class will be a thread which will handle a client.
+ *
+ * @author Taha Emli
+ * @version 1
+ */
 public class ClientHandler implements Runnable{
     private Socket socket;
     private DataInputStream dataInputStream;
@@ -27,6 +34,10 @@ public class ClientHandler implements Runnable{
         setName();
     }
 
+    /**
+     * This method will set a name for the player.
+     * It also checks if the name is duplicate or not, using checkName method of the GameServer class
+     */
     private void setName() {
         String response = "";
         String name = "";

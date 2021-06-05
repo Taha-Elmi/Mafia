@@ -1,5 +1,11 @@
 package server;
 
+/**
+ * This class represents a player in the server.
+ *
+ * @author Taha Elmi
+ * @version 1
+ */
 public class Player {
     private String username;
     private boolean isActive;
