@@ -11,11 +11,12 @@ public class Player {
     private boolean isActive;
     private boolean isAlive;
     private boolean isSilent;
+    private boolean isReady;
     private int hearts;
 
     public Player(String name) {
         isActive = isAlive = true;
-        isSilent = false;
+        isSilent = isReady = false;
         hearts = 1;
         username = name;
     }
@@ -34,5 +35,13 @@ public class Player {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * setter of the isReady field
+     * @param ready the new boolean
+     */
+    public void setReady(boolean ready) {
+        isReady = ready;
     }
 }

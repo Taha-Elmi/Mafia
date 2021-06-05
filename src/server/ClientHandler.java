@@ -32,6 +32,7 @@ public class ClientHandler extends Thread{
     @Override
     public void run() {
         setName();
+        setReady();
     }
 
     /**
@@ -57,5 +58,18 @@ public class ClientHandler extends Thread{
                 System.err.println("Couldn't send data to the client.");
             }
         } while (!response.equals("OK"));
+    }
+
+    /**
+     * It will tell the server that the client is ready for the game.
+     */
+    private void setReady() {
+        try {
+            dataInputStream.readUTF();
+        } catch (IOException e) {
+            System.err.println("Couldn't get the ready sign from the client.");
+        }
+        player.setReady(true);
+        System.out.println(player.getUsername() + " is ready!");
     }
 }

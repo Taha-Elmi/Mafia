@@ -22,6 +22,7 @@ public class Client {
         System.out.println("Hi, welcome to our Mafia Banquet :)))");
         while (!connectToServer());
         setName();
+        setReady();
         scanner.next();
     }
 
@@ -73,5 +74,23 @@ public class Client {
         }
 
         System.out.println("You have been successfully entered the game with the username: " + name);
+    }
+
+    /**
+     * It will tell the server that the client is ready for the game.
+     */
+    private static void setReady() {
+        String input;
+        do {
+            System.out.println("Type \"ok\" when you get ready.");
+            input = scanner.nextLine();
+        } while (!input.equalsIgnoreCase("ok"));
+
+        try {
+            dataOutputStream.writeUTF("ok");
+        } catch (IOException e) {
+            System.err.println("Couldn't send data to the server");
+        }
+
     }
 }
