@@ -20,7 +20,9 @@ public class Client {
 
     public static void main(String[] args) {
         System.out.println("Hi, welcome to our Mafia Banquet :)))");
-        while (connectToServer());
+        while (!connectToServer());
+        setName();
+        scanner.next();
     }
 
     /**
@@ -31,7 +33,7 @@ public class Client {
         System.out.println("Enter the ip of the server:");
         String ip = scanner.nextLine();
         System.out.println("Now Enter the port of the server:");
-        int port = scanner.nextInt();
+        int port = Integer.parseInt(scanner.nextLine());
 
         try {
             socket = new Socket(ip, port);
@@ -53,7 +55,8 @@ public class Client {
 
         String name;
         String response = "";
-        do {
+
+        while (true) {
             name = scanner.nextLine();
             try {
                 dataOutputStream.writeUTF(name);
@@ -65,8 +68,9 @@ public class Client {
             if (!response.equals("OK"))
                 System.out.println("There is already another user with this username.\n" +
                         "Please submit another name for yourself:");
-
-        } while (!response.equals("OK"));
+            else
+                break;
+        }
 
         System.out.println("You have been successfully entered the game with the username: " + name);
     }
