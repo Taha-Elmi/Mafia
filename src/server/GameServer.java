@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @version 1
  */
 public class GameServer {
-    private static final GameServer instance = new GameServer(10);
+    private static final GameServer instance = new GameServer(3);
     private static int port = 2000;
     private static int numberOfPlayers;
     private static ArrayList<Player> players;
@@ -25,6 +25,9 @@ public class GameServer {
 
     public static void main(String[] args) {
         waitForClients();
+        //while (checkIfReady());
+        while (gooooj() != 0);
+        System.out.println("All of the players are now ready.");
     }
 
     /**
@@ -46,6 +49,7 @@ public class GameServer {
             System.err.println("The port " + port + " was not free. Trying the port " + (port + 1) + "...");
             port++;
             waitForClients();
+            return;
         }
 
         for (int i = 0; i < numberOfPlayers; i++) {
@@ -74,5 +78,27 @@ public class GameServer {
                 return true;
         }
         return false;
+    }
+
+    /**
+     * It checks if all players are ready or not
+     * @return true if all of the players are ready, and false otherwise
+     */
+    private static boolean checkIfReady() {
+        for (Player player : players) {
+            if (!player.isReady())
+                return false;
+        }
+        return true;
+    }
+
+    private static int gooooj() {
+        int i = 0;
+        for (Player player : players) {
+            if (!player.isReady()) {
+                i++;
+            }
+        }
+        return i;
     }
 }

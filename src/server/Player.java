@@ -44,4 +44,12 @@ public class Player {
     public void setReady(boolean ready) {
         isReady = ready;
     }
+
+    /**
+     * getter of the isReady field
+     * @return the value of the isReady field
+     */
+    public boolean isReady() {
+        return isReady;
+    }
 }
