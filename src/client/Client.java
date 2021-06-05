@@ -34,4 +34,8 @@ public class Client {
         }
     }
 
+    private static void setName() {
+        System.out.println("Enter a username for yourself:");
+        String name;
+    }
 }
