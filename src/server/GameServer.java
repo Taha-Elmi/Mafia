@@ -25,8 +25,7 @@ public class GameServer {
 
     public static void main(String[] args) {
         waitForClients();
-        //while (checkIfReady());
-        while (gooooj() != 0);
+        while (!checkIfReady());
         System.out.println("All of the players are now ready.");
     }
 
@@ -86,19 +85,11 @@ public class GameServer {
      */
     private static boolean checkIfReady() {
         for (Player player : players) {
+            //Here we have a mysterious bug. If we don't put the print below, it won't exit the loop :|
+            System.out.print("");
             if (!player.isReady())
                 return false;
         }
         return true;
-    }
-
-    private static int gooooj() {
-        int i = 0;
-        for (Player player : players) {
-            if (!player.isReady()) {
-                i++;
-            }
-        }
-        return i;
     }
 }

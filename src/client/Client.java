@@ -92,5 +92,6 @@ public class Client {
             System.err.println("Couldn't send data to the server");
         }
 
+        System.out.println("Nice! Now wait for other players to get ready and then the game will begin...");
     }
 }
