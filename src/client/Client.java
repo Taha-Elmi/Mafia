@@ -94,4 +94,48 @@ public class Client {
 
         System.out.println("Nice! Now wait for other players to get ready and then the game will begin...");
     }
+
+    private class UserReader extends Thread {
+        private final Scanner scanner;
+        private final DataOutputStream dataOutputStream;
+
+        public UserReader(Scanner scanner, DataOutputStream dataOutputStream) {
+            this.scanner = scanner;
+            this.dataOutputStream = dataOutputStream;
+        }
+
+        @Override
+        public void run() {
+            String text;
+            while (true) {
+                text = scanner.nextLine();
+                try {
+                    dataOutputStream.writeUTF(text);
+                } catch (IOException e) {
+                    System.err.println("Couldn't send data to the server.");
+                }
+            }
+        }
+    }
+
+    private class ServerReader extends Thread {
+        private final DataInputStream dataInputStream;
+
+        public ServerReader(DataInputStream dataInputStream) {
+            this.dataInputStream = dataInputStream;
+        }
+
+        @Override
+        public void run() {
+            String text = "";
+            while (true) {
+                try {
+                    text = dataInputStream.readUTF();
+                } catch (IOException e) {
+                    System.err.println("There was an error in getting data from the server.");
+                }
+                System.out.println(text);
+            }
+        }
+    }
 }
