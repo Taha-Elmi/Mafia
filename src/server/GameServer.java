@@ -17,10 +17,12 @@ public class GameServer {
     private static int port = 2000;
     private static int numberOfPlayers;
     private static ArrayList<Player> players;
+    private static String state;
 
     private GameServer(int numberOfPlayers) {
         GameServer.numberOfPlayers = numberOfPlayers;
         players = new ArrayList<>();
+        state = "beginning";
     }
 
     public static void main(String[] args) {
@@ -35,6 +37,10 @@ public class GameServer {
      */
     public static GameServer getInstance() {
         return instance;
+    }
+
+    public static String getState() {
+        return state;
     }
 
     /**

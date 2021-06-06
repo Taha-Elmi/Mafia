@@ -92,8 +92,19 @@ public class ClientHandler extends Thread{
             }
         }
 
+        /**
+         * It will process that what is the right reaction to the input string
+         * @param text input string received from the client
+         */
         private void processText(String text) {
-
+            if (GameServer.getState().equals("beginning")) {
+                try {
+                    dataOutputStream.writeUTF("Just wait for other players to get ready...");
+                } catch (IOException e) {
+                    System.err.println("Couldn't send data to the client.");
+                }
+                return;
+            }
         }
     }
 }

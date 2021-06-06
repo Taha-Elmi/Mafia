@@ -23,7 +23,12 @@ public class Client {
         while (!connectToServer());
         setName();
         setReady();
-        scanner.next();
+
+        UserReader userReader = new UserReader();
+        userReader.start();
+
+        ServerReader serverReader = new ServerReader();
+        serverReader.start();
     }
 
     /**
@@ -95,14 +100,7 @@ public class Client {
         System.out.println("Nice! Now wait for other players to get ready and then the game will begin...");
     }
 
-    private class UserReader extends Thread {
-        private final Scanner scanner;
-        private final DataOutputStream dataOutputStream;
-
-        public UserReader(Scanner scanner, DataOutputStream dataOutputStream) {
-            this.scanner = scanner;
-            this.dataOutputStream = dataOutputStream;
-        }
+    private static class UserReader extends Thread {
 
         @Override
         public void run() {
@@ -118,12 +116,7 @@ public class Client {
         }
     }
 
-    private class ServerReader extends Thread {
-        private final DataInputStream dataInputStream;
-
-        public ServerReader(DataInputStream dataInputStream) {
-            this.dataInputStream = dataInputStream;
-        }
+    private static class ServerReader extends Thread {
 
         @Override
         public void run() {
