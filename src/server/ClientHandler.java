@@ -33,6 +33,9 @@ public class ClientHandler extends Thread{
     public void run() {
         setName();
         setReady();
+
+        ClientReader clientReader = new ClientReader();
+        clientReader.start();
     }
 
     /**
@@ -72,5 +75,25 @@ public class ClientHandler extends Thread{
         }
         player.setReady(true);
         System.out.println("+ " + player.getUsername() + " is ready!");
+    }
+
+    private class ClientReader extends Thread {
+
+        @Override
+        public void run() {
+            String text = "";
+            while (true) {
+                try {
+                    text = dataInputStream.readUTF();
+                } catch (IOException e) {
+                    System.err.println("There was an error in getting data from the client.");
+                }
+                processText(text);
+            }
+        }
+
+        private void processText(String text) {
+
+        }
     }
 }
