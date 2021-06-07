@@ -13,6 +13,7 @@ public class Player {
     private boolean isSilent;
     private boolean isReady;
     private int hearts;
+    private Role role;
 
     public Player(String name) {
         isActive = isAlive = true;

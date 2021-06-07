@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * This class is the main class of the server, which will handle the logic of the game and move it on.
@@ -28,7 +29,7 @@ public class GameServer {
     public static void main(String[] args) {
         waitForClients();
         while (!checkIfReady());
-        System.out.println("All of the players are now ready.");
+        randomizePlayers();
     }
 
     /**
@@ -97,5 +98,16 @@ public class GameServer {
                 return false;
         }
         return true;
+    }
+
+    /**
+     * It will randomize the sequence of the players, so that the roles will be given randomly to the players.
+     */
+    private static void randomizePlayers() {
+        ArrayList<Player> temp = new ArrayList<>();
+        Random random = new Random();
+        while (players.size() != 0)
+            temp.add(players.remove(random.nextInt(players.size())));
+        players = temp;
     }
 }
