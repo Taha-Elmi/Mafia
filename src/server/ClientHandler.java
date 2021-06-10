@@ -118,10 +118,15 @@ public class ClientHandler extends Thread{
          */
         private void processText(String text) {
             if (Game.getInstance().getState().equals("beginning")) {
-                try {
-                    dataOutputStream.writeUTF("Just wait for other players to get ready...");
-                } catch (IOException e) {
-                    System.err.println("Couldn't send data to the client.");
+                write("Just wait for other players to get ready...");
+                return;
+            }
+
+            if (Game.getInstance().getState().equals("day")) {
+                if (player.isSilent()) {
+                    write("The psychiatrist has made you silent. You can't talk today.");
+                } else {
+                    Game.getInstance().chat(player.getUsername() + ": " + text);
                 }
                 return;
             }

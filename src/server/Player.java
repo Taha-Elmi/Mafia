@@ -55,6 +55,14 @@ public class Player {
     }
 
     /**
+     * getter of the isSilent field
+     * @return the value of the isSilent field
+     */
+    public boolean isSilent() {
+        return isSilent;
+    }
+
+    /**
      * getter of the role field
      * @return the role field
      */

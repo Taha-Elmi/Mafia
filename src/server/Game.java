@@ -35,6 +35,7 @@ public class Game {
         randomizePlayers();
         giveRoles();
         introduce();
+        dawn();
     }
 
     /**
@@ -47,6 +48,14 @@ public class Game {
 
     public String getState() {
         return state;
+    }
+
+    /**
+     * setter of the state field
+     * @param state the new state
+     */
+    public void setState(String state) {
+        this.state = state;
     }
 
     /**
@@ -194,5 +203,19 @@ public class Game {
             }
 
         }
+    }
+
+    private void dawn() {
+        chat("\n\n===============\nDay1\n===============");
+        setState("day");
+    }
+
+    /**
+     * implements chatting. Sending texts to every player.
+     * @param text the message
+     */
+    protected void chat(String text) {
+        for (ClientHandler clientHandler : clientHandlers)
+            clientHandler.write(text);
     }
 }
