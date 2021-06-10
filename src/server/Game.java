@@ -20,6 +20,7 @@ public class Game {
     private ArrayList<Player> players;
     private ArrayList<Player> mafias;
     private String state;
+    private int day;
 
     private Game(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
@@ -27,6 +28,7 @@ public class Game {
         clientHandlers = new ArrayList<>();
         mafias = new ArrayList<>();
         state = "beginning";
+        day = 0;
     }
 
     public void run() {
@@ -206,7 +208,8 @@ public class Game {
     }
 
     private void dawn() {
-        chat("\n\n===============\nDay1\n===============");
+        day++;
+        chat("\n\n===============\nDay" + day + "\n===============");
         setState("day");
     }
 
