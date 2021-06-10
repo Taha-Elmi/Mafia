@@ -15,6 +15,7 @@ public class Player {
     private int hearts;
     private Role role;
     private int vote;
+    private int inactivity;
 
     public Player(String name) {
         isActive = isAlive = true;
@@ -22,6 +23,7 @@ public class Player {
         hearts = 1;
         username = name;
         vote = 0;
+        inactivity = 0;
     }
 
     /**
@@ -78,6 +80,30 @@ public class Player {
      */
     public void setVote(int vote) {
         this.vote = vote;
+    }
+
+    /**
+     * getter of the vote field
+     * @return the vote field
+     */
+    public int getVote() {
+        return vote;
+    }
+
+    /**
+     * setter of the inactivity field
+     * @param inactivity inactivity field
+     */
+    public void setInactivity(int inactivity) {
+        this.inactivity = inactivity;
+    }
+
+    /**
+     * getter of the inactivity field
+     * @return the inactivity field
+     */
+    public int getInactivity() {
+        return inactivity;
     }
 
     /**

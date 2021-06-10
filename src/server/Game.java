@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -21,6 +22,7 @@ public class Game {
     private ArrayList<Player> mafias;
     private String state;
     private int day;
+    private boolean hasMayor;
 
     private Game(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
@@ -29,6 +31,7 @@ public class Game {
         mafias = new ArrayList<>();
         state = "beginning";
         day = 0;
+        hasMayor = false;
     }
 
     public void run() {
@@ -41,6 +44,19 @@ public class Game {
             try {
                 dawn();
                 Thread.sleep(60 * 1000);
+                declareCandidates();
+                Thread.sleep(30 * 1000);
+                Player target = getVotes();
+                if (hasMayor) {
+                    chat("waiting for mayor's decision...");
+                    boolean cancel = askMayor();
+                    if (!cancel)
+                        kill(target);
+                    else
+                        chat(ConsoleColors.ANSI_RED + "The mayor has cancelled the voting." + ConsoleColors.ANSI_RESET);
+                } else {
+                    kill(target);
+                }
                 dusk();
                 Thread.sleep(30 * 1000);
             } catch (InterruptedException e) {
@@ -185,6 +201,7 @@ public class Game {
                 numberOfCitizens--;
             } else if (numberOfCitizens == 7) {
                 player.setRole(new Role.Mayor());
+                hasMayor = true;
                 numberOfCitizens--;
             } else {
                 player.setRole(new Role.SimpleCitizen());
@@ -280,6 +297,71 @@ public class Game {
      */
     protected int countAlivePlayers() {
         return countMafias() + countCitizens();
+    }
+
+    /**
+     * It declare the candidates of the voting of the end of the day
+     */
+    public void declareCandidates() {
+        chat("Choose the index of the person you want to vote for their removal.");
+        int index = 1;
+        for (ClientHandler clientHandler : clientHandlers)
+            chat(index + "- " + ConsoleColors.ANSI_GREEN + clientHandler.getPlayer().getUsername() + ConsoleColors.ANSI_RESET);
+        setState("voting");
+    }
+
+    /**
+     * It gets votes from everybody, and process the votes
+     */
+    private Player getVotes() {
+        ArrayList<Player> alivePlayers = new ArrayList<>();
+        for (Player player : players) {
+            if (player.isAlive())
+                alivePlayers.add(player);
+        }
+
+        HashMap<Integer, Integer> votes = new HashMap<>();
+        for (int i = 1; i <= countAlivePlayers(); i++)
+            votes.put(i, 0);
+
+        for (Player player : alivePlayers) {
+            if (player.getVote() == 0) {
+                player.setInactivity(player.getInactivity() + 1);
+                continue;
+            }
+            player.setInactivity(0);
+            votes.put(player.getVote(), votes.get(player.getVote()) + 1);
+        }
+
+        int maxIndex = 1;
+        for (Integer integer : votes.keySet()) {
+            if (votes.get(integer) > votes.get(maxIndex))
+                maxIndex = integer;
+        }
+
+        //declaring the results to everyone
+        chat(ConsoleColors.ANSI_CYAN + "Voting Results: " + ConsoleColors.ANSI_RESET);
+        for (ClientHandler clientHandler : clientHandlers) {
+            if (clientHandler.getPlayer().isAlive()) {
+                String target = (clientHandler.getPlayer().getVote() == 0 ? "-No one-" :
+                        alivePlayers.get(clientHandler.getPlayer().getVote() - 1).getUsername());
+                chat(ConsoleColors.ANSI_CYAN + clientHandler.getPlayer().getUsername() + " has voted to: " + ConsoleColors.ANSI_RESET + target);
+            }
+        }
+
+        return alivePlayers.get(maxIndex - 1);
+    }
+
+    private void resetVotes() {
+
+    }
+
+    private boolean askMayor() {
+        return true;
+    }
+
+    private void kill(Player victim) {
+
     }
 
     /**
