@@ -14,7 +14,7 @@ import java.util.Random;
  * @version 1
  */
 public class Game {
-    private static final Game instance = new Game(6);
+    private static final Game instance = new Game(4);
     private int numberOfPlayers;
     private ArrayList<ClientHandler> clientHandlers;
     private ArrayList<Player> players;
@@ -37,7 +37,17 @@ public class Game {
         randomizePlayers();
         giveRoles();
         introduce();
-        dawn();
+        while (!checkIfFinished()){
+            //System.out.println("Entering the loop...");
+            try {
+                dawn();
+                Thread.sleep(60 * 1000);
+                dusk();
+                Thread.sleep(30 * 1000);
+            } catch (InterruptedException e) {
+                System.err.println("An error occurred.");
+            }
+        }
     }
 
     /**
@@ -186,19 +196,20 @@ public class Game {
      */
     private void introduce() {
         for (ClientHandler clientHandler : clientHandlers) {
-            clientHandler.write("\nYou're " + clientHandler.getPlayer().getRole().toString() + "!\n");
+            clientHandler.write(ConsoleColors.ANSI_RED + "\nYou're " + clientHandler.getPlayer().getRole() + "!\n" + ConsoleColors.ANSI_RESET);
 
             if (clientHandler.getPlayer().getRole() instanceof Role.Mafia) {
-                clientHandler.write("The Mafia Team:");
+                clientHandler.write(ConsoleColors.ANSI_PURPLE + "The Mafia Team:");
                 for (Player player : mafias) {
                     clientHandler.write("- " + player.getUsername() + " as " + player.getRole().toString());
                 }
+                clientHandler.write(ConsoleColors.ANSI_RESET);
             }
 
             if (clientHandler.getPlayer().getRole() instanceof Role.Mayor) {
                 for (Player player : players) {
                     if (player.getRole() instanceof Role.Doctor) {
-                        clientHandler.write("The doctor is: " + player.getUsername());
+                        clientHandler.write(ConsoleColors.ANSI_PURPLE + "The doctor is: " + player.getUsername() + ConsoleColors.ANSI_RESET);
                         break;
                     }
                 }
@@ -208,12 +219,21 @@ public class Game {
     }
 
     /**
-     * It will change the game state to "day" and do necessary things that have to be done on the beginning of a day.
+     * It will change the game state to "day" and do necessary things that have to be done in the beginning of a day.
      */
     private void dawn() {
         day++;
-        chat("\n\n===============\nDay" + day + "\n===============");
+        chat(ConsoleColors.ANSI_YELLOW + "\n===============\nDay" + day + "\n===============" + ConsoleColors.ANSI_RESET);
+        chat(ConsoleColors.ANSI_BLUE + "GOD: You can discuss now for 5 minute..." + ConsoleColors.ANSI_RESET);
         setState("day");
+    }
+
+    /**
+     * It will change the game state to "night" and do necessary things that have to be done at night.
+     */
+    private void dusk() {
+        setState("night");
+        chat(ConsoleColors.ANSI_BLUE + "GOD: It's night, time to sleep..." + ConsoleColors.ANSI_RESET);
     }
 
     /**
@@ -260,12 +280,5 @@ public class Game {
         int numberOfCitizens = countCitizens();
 
         return numberOfMafias == numberOfCitizens || numberOfMafias == 0;
-    }
-
-    private class TimeHandler extends Thread {
-        @Override
-        public void run() {
-
-        }
     }
 }

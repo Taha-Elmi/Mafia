@@ -126,8 +126,14 @@ public class ClientHandler extends Thread{
                 if (player.isSilent()) {
                     write("The psychiatrist has made you silent. You can't talk today.");
                 } else {
-                    Game.getInstance().chat(player.getUsername() + ": " + text);
+                    Game.getInstance().chat(ConsoleColors.ANSI_GREEN + player.getUsername() + ": " +
+                            ConsoleColors.ANSI_RESET + text);
                 }
+                return;
+            }
+
+            if (Game.getInstance().getState().equals("night")) {
+                write("It's night...");
                 return;
             }
         }
