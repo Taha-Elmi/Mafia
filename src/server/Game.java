@@ -38,7 +38,6 @@ public class Game {
         giveRoles();
         introduce();
         while (!checkIfFinished()){
-            //System.out.println("Entering the loop...");
             try {
                 dawn();
                 Thread.sleep(60 * 1000);
@@ -58,6 +57,10 @@ public class Game {
         return instance;
     }
 
+    /**
+     * getter of the state field
+     * @return the state field
+     */
     public String getState() {
         return state;
     }
@@ -269,6 +272,14 @@ public class Game {
                 answer++;
         }
         return answer;
+    }
+
+    /**
+     * It count alive players.
+     * @return number of alive players
+     */
+    protected int countAlivePlayers() {
+        return countMafias() + countCitizens();
     }
 
     /**

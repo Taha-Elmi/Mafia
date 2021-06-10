@@ -39,13 +39,16 @@ public class Client {
         System.out.println("Enter the ip of the server:");
         String ip = scanner.nextLine();
         System.out.println("Now Enter the port of the server:");
-        int port = Integer.parseInt(scanner.nextLine());
 
         try {
+            int port = Integer.parseInt(scanner.nextLine());
             socket = new Socket(ip, port);
             dataInputStream = new DataInputStream(socket.getInputStream());
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             return true;
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid input for the port. Enter a number. ");
+            return false;
         } catch (IOException e) {
             System.err.println("Couldn't connect to the server.");
             return false;

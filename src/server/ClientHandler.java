@@ -132,6 +132,18 @@ public class ClientHandler extends Thread{
                 return;
             }
 
+            if (Game.getInstance().getState().equals("voting")) {
+                try {
+                    int vote = Integer.parseInt(text);
+                    if (vote <= 0 || vote > Game.getInstance().countAlivePlayers())
+                        throw new IndexOutOfBoundsException();
+                    player.setVote(vote);
+                } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                    write("Invalid input. Enter the index of one of the players.");
+                }
+                return;
+            }
+
             if (Game.getInstance().getState().equals("night")) {
                 write("It's night...");
                 return;

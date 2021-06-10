@@ -14,12 +14,14 @@ public class Player {
     private boolean isReady;
     private int hearts;
     private Role role;
+    private int vote;
 
     public Player(String name) {
         isActive = isAlive = true;
         isSilent = isReady = false;
         hearts = 1;
         username = name;
+        vote = 0;
     }
 
     /**
@@ -68,6 +70,14 @@ public class Player {
      */
     public boolean isAlive() {
         return isAlive;
+    }
+
+    /**
+     * setter of the vote field
+     * @param vote the new vote
+     */
+    public void setVote(int vote) {
+        this.vote = vote;
     }
 
     /**
