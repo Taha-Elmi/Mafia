@@ -138,6 +138,7 @@ public class ClientHandler extends Thread{
                     if (vote <= 0 || vote > Game.getInstance().countAlivePlayers())
                         throw new IndexOutOfBoundsException();
                     player.setVote(vote);
+                    write("Your vote has been submitted. You can change it until the end of the voting phrase.");
                 } catch (NumberFormatException | IndexOutOfBoundsException e) {
                     write("Invalid input. Enter the index of one of the players.");
                 }

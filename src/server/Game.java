@@ -57,8 +57,10 @@ public class Game {
                 } else {
                     kill(target);
                 }
+                checkInactivity();
+                resetVotes();
                 dusk();
-                Thread.sleep(30 * 1000);
+                Thread.sleep(10 * 1000);
             } catch (InterruptedException e) {
                 System.err.println("An error occurred.");
             }
@@ -303,10 +305,13 @@ public class Game {
      * It declare the candidates of the voting of the end of the day
      */
     public void declareCandidates() {
+        chat(ConsoleColors.ANSI_BLUE + "GOD: Now vote for your suspend." + ConsoleColors.ANSI_RESET);
         chat("Choose the index of the person you want to vote for their removal.");
         int index = 1;
-        for (ClientHandler clientHandler : clientHandlers)
+        for (ClientHandler clientHandler : clientHandlers) {
             chat(index + "- " + ConsoleColors.ANSI_GREEN + clientHandler.getPlayer().getUsername() + ConsoleColors.ANSI_RESET);
+            index++;
+        }
         setState("voting");
     }
 
@@ -315,9 +320,9 @@ public class Game {
      */
     private Player getVotes() {
         ArrayList<Player> alivePlayers = new ArrayList<>();
-        for (Player player : players) {
-            if (player.isAlive())
-                alivePlayers.add(player);
+        for (ClientHandler clientHandler : clientHandlers) {
+            if (clientHandler.getPlayer().isAlive())
+                alivePlayers.add(clientHandler.getPlayer());
         }
 
         HashMap<Integer, Integer> votes = new HashMap<>();
@@ -352,8 +357,24 @@ public class Game {
         return alivePlayers.get(maxIndex - 1);
     }
 
-    private void resetVotes() {
+    /**
+     * It will check if there is any inactive player.
+     */
+    public void checkInactivity() {
+        for (Player player : players) {
+            if (player.getInactivity() >= 3) {
+                kill(player);
+                chat(ConsoleColors.ANSI_RED + player.getUsername() + " has been kicked due to inactivity." + ConsoleColors.ANSI_RESET);
+            }
+        }
+    }
 
+    /**
+     * It resets the vote field of every player
+     */
+    private void resetVotes() {
+        for (Player player : players)
+            player.setVote(0);
     }
 
     private boolean askMayor() {
