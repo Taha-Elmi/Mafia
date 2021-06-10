@@ -15,14 +15,14 @@ import java.util.Random;
  */
 public class Game {
     private static final Game instance = new Game(6);
-    private static int numberOfPlayers;
-    private static ArrayList<ClientHandler> clientHandlers;
-    private static ArrayList<Player> players;
-    private static ArrayList<Player> mafias;
-    private static String state;
+    private int numberOfPlayers;
+    private ArrayList<ClientHandler> clientHandlers;
+    private ArrayList<Player> players;
+    private ArrayList<Player> mafias;
+    private String state;
 
     private Game(int numberOfPlayers) {
-        Game.numberOfPlayers = numberOfPlayers;
+        this.numberOfPlayers = numberOfPlayers;
         players = new ArrayList<>();
         clientHandlers = new ArrayList<>();
         mafias = new ArrayList<>();
@@ -45,14 +45,14 @@ public class Game {
         return instance;
     }
 
-    public static String getState() {
+    public String getState() {
         return state;
     }
 
     /**
      * This method will create connections with the clients
      */
-    private static void waitForClients(int port) {
+    private void waitForClients(int port) {
         ServerSocket welcomingSocket;
         try {
             welcomingSocket = new ServerSocket(port);
@@ -96,7 +96,7 @@ public class Game {
      * It checks if all players are ready or not
      * @return true if all of the players are ready, and false otherwise
      */
-    private static boolean checkIfReady() {
+    private boolean checkIfReady() {
         for (Player player : players) {
             //Here we have a mysterious bug. If we don't put the print below, it won't exit the loop :|
             System.out.print("");
@@ -109,7 +109,7 @@ public class Game {
     /**
      * It will randomize the sequence of the players, so that the roles will be given randomly to the players.
      */
-    private static void randomizePlayers() {
+    private void randomizePlayers() {
         ArrayList<Player> temp = new ArrayList<>();
         Random random = new Random();
         while (players.size() != 0)
@@ -120,7 +120,7 @@ public class Game {
     /**
      * It will give appropriate roles to every player, according to the number of players.
      */
-    private static void giveRoles() {
+    private void giveRoles() {
         int numberOfMafia = numberOfPlayers / 3;
         int numberOfCitizens = numberOfPlayers - numberOfMafia;
 
@@ -173,7 +173,7 @@ public class Game {
     /**
      * It will tell everybody their roles.
      */
-    private static void introduce() {
+    private void introduce() {
         for (ClientHandler clientHandler : clientHandlers) {
             clientHandler.write("\nYou're " + clientHandler.getPlayer().getRole().toString() + "!\n");
 

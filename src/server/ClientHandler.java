@@ -117,7 +117,7 @@ public class ClientHandler extends Thread{
          * @param text input string received from the client
          */
         private void processText(String text) {
-            if (Game.getState().equals("beginning")) {
+            if (Game.getInstance().getState().equals("beginning")) {
                 try {
                     dataOutputStream.writeUTF("Just wait for other players to get ready...");
                 } catch (IOException e) {
