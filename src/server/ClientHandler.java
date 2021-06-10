@@ -117,6 +117,11 @@ public class ClientHandler extends Thread{
          * @param text input string received from the client
          */
         private void processText(String text) {
+            if (!player.isAlive()) {
+                write("You're dead. You can't talk or do anything. You can just watch the rest of the game.");
+                return;
+            }
+
             if (Game.getInstance().getState().equals("beginning")) {
                 write("Just wait for other players to get ready...");
                 return;

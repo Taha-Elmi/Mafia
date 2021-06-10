@@ -40,31 +40,24 @@ public class Game {
         randomizePlayers();
         giveRoles();
         introduce();
-        while (!checkIfFinished()){
+        while (true){
             try {
                 dawn();
                 Thread.sleep(60 * 1000);
                 declareCandidates();
                 Thread.sleep(30 * 1000);
-                Player target = getVotes();
-                if (hasMayor) {
-                    chat("waiting for mayor's decision...");
-                    boolean cancel = askMayor();
-                    if (!cancel)
-                        kill(target);
-                    else
-                        chat(ConsoleColors.ANSI_RED + "The mayor has cancelled the voting." + ConsoleColors.ANSI_RESET);
-                } else {
-                    kill(target);
-                }
-                checkInactivity();
-                resetVotes();
+                processVotes();
+                if (checkIfFinished())
+                    break;
                 dusk();
                 Thread.sleep(10 * 1000);
+                if (checkIfFinished())
+                    break;
             } catch (InterruptedException e) {
                 System.err.println("An error occurred.");
             }
         }
+        System.out.println("The game is finished");
     }
 
     /**
@@ -305,12 +298,14 @@ public class Game {
      * It declare the candidates of the voting of the end of the day
      */
     public void declareCandidates() {
-        chat(ConsoleColors.ANSI_BLUE + "GOD: Now vote for your suspend." + ConsoleColors.ANSI_RESET);
+        chat(ConsoleColors.ANSI_BLUE + "GOD: Now vote for your suspect." + ConsoleColors.ANSI_RESET);
         chat("Choose the index of the person you want to vote for their removal.");
         int index = 1;
         for (ClientHandler clientHandler : clientHandlers) {
-            chat(index + "- " + ConsoleColors.ANSI_GREEN + clientHandler.getPlayer().getUsername() + ConsoleColors.ANSI_RESET);
-            index++;
+            if (clientHandler.getPlayer().isAlive()) {
+                chat(index + "- " + ConsoleColors.ANSI_GREEN + clientHandler.getPlayer().getUsername() + ConsoleColors.ANSI_RESET);
+                index++;
+            }
         }
         setState("voting");
     }
@@ -339,9 +334,14 @@ public class Game {
         }
 
         int maxIndex = 1;
+        boolean isUnique = true;
         for (Integer integer : votes.keySet()) {
-            if (votes.get(integer) > votes.get(maxIndex))
+            if (votes.get(integer) > votes.get(maxIndex)) {
                 maxIndex = integer;
+                isUnique = true;
+            } else if (votes.get(integer).equals(votes.get(maxIndex))) {
+                isUnique = false;
+            }
         }
 
         //declaring the results to everyone
@@ -354,7 +354,7 @@ public class Game {
             }
         }
 
-        return alivePlayers.get(maxIndex - 1);
+        return (isUnique ? alivePlayers.get(maxIndex - 1) : null);
     }
 
     /**
@@ -381,8 +381,41 @@ public class Game {
         return true;
     }
 
+    /**
+     * It kills a player.
+     * @param victim the player which will be killed
+     */
     private void kill(Player victim) {
+        victim.setAlive(false);
+    }
 
+    /**
+     * It will do all the things which is necessary after the voting phrase.
+     * Getting the votes,
+     * asking the mayor,
+     * declaring the victim
+     * and checking the inactivity of players during the votings.
+     */
+    private void processVotes() {
+        Player target = getVotes();
+        if (target == null) {
+            chat("No one exits the game.");
+        } else {
+            if (hasMayor) {
+                chat("waiting for mayor's decision...");
+                boolean cancel = askMayor();
+                if (!cancel) {
+                    kill(target);
+                    chat(ConsoleColors.ANSI_RED + "Mayor accepted. " + target.getUsername() + " has been kicked due to the voting result." + ConsoleColors.ANSI_RESET);
+                } else
+                    chat(ConsoleColors.ANSI_RED + "The mayor has cancelled the voting." + ConsoleColors.ANSI_RESET);
+            } else {
+                kill(target);
+                chat(ConsoleColors.ANSI_RED + target.getUsername() + " has been kicked due to the voting result." + ConsoleColors.ANSI_RESET);
+            }
+        }
+        checkInactivity();
+        resetVotes();
     }
 
     /**

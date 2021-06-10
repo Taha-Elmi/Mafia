@@ -75,6 +75,14 @@ public class Player {
     }
 
     /**
+     * setter of the isAlive field
+     * @param alive the new value of the field
+     */
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    /**
      * setter of the vote field
      * @param vote the new vote
      */
