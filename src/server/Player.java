@@ -63,6 +63,14 @@ public class Player {
     }
 
     /**
+     * getter of the isAlive field
+     * @return the value of the isAlive field
+     */
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    /**
      * getter of the role field
      * @return the role field
      */

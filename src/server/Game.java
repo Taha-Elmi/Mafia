@@ -207,6 +207,9 @@ public class Game {
         }
     }
 
+    /**
+     * It will change the game state to "day" and do necessary things that have to be done on the beginning of a day.
+     */
     private void dawn() {
         day++;
         chat("\n\n===============\nDay" + day + "\n===============");
@@ -220,5 +223,49 @@ public class Game {
     protected void chat(String text) {
         for (ClientHandler clientHandler : clientHandlers)
             clientHandler.write(text);
+    }
+
+    /**
+     * it will count the number of alive mafias
+     * @return number of alive mafias
+     */
+    private int countMafias() {
+        int answer = 0;
+        for (Player player : players) {
+            if (player.getRole() instanceof Role.Mafia && player.isAlive())
+                answer++;
+        }
+        return answer;
+    }
+
+    /**
+     * it will count the number of alive citizens
+     * @return number of alive citizens
+     */
+    private int countCitizens() {
+        int answer = 0;
+        for (Player player : players) {
+            if (!(player.getRole() instanceof Role.Mafia) && player.isAlive())
+                answer++;
+        }
+        return answer;
+    }
+
+    /**
+     * It checks if the game is finished or not
+     * @return true if finished, and false otherwise
+     */
+    private boolean checkIfFinished() {
+        int numberOfMafias = countMafias();
+        int numberOfCitizens = countCitizens();
+
+        return numberOfMafias == numberOfCitizens || numberOfMafias == 0;
+    }
+
+    private class TimeHandler extends Thread {
+        @Override
+        public void run() {
+
+        }
     }
 }
