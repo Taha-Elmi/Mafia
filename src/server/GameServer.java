@@ -14,25 +14,27 @@ import java.util.Random;
  * @version 1
  */
 public class GameServer {
-    private static final GameServer instance = new GameServer(3);
-    private static int port = 2000;
+    private static final GameServer instance = new GameServer(6);
     private static int numberOfPlayers;
-    private static ArrayList<Player> players;
     private static ArrayList<ClientHandler> clientHandlers;
+    private static ArrayList<Player> players;
+    private static ArrayList<Player> mafias;
     private static String state;
 
     private GameServer(int numberOfPlayers) {
         GameServer.numberOfPlayers = numberOfPlayers;
         players = new ArrayList<>();
         clientHandlers = new ArrayList<>();
+        mafias = new ArrayList<>();
         state = "beginning";
     }
 
     public static void main(String[] args) {
-        waitForClients();
+        waitForClients(2000);
         while (!checkIfReady());
         randomizePlayers();
         giveRoles();
+        introduce();
     }
 
     /**
@@ -50,15 +52,14 @@ public class GameServer {
     /**
      * This method will create connections with the clients
      */
-    private static void waitForClients() {
-        ServerSocket welcomingSocket = null;
+    private static void waitForClients(int port) {
+        ServerSocket welcomingSocket;
         try {
             welcomingSocket = new ServerSocket(port);
             System.out.println("The server is on the port " + port);
         } catch (IOException e) {
             System.err.println("The port " + port + " was not free. Trying the port " + (port + 1) + "...");
-            port++;
-            waitForClients();
+            waitForClients(port + 1);
             return;
         }
 
@@ -126,15 +127,19 @@ public class GameServer {
         for (Player player : players) {
             if (numberOfMafia == 1) {
                 player.setRole(new Role.GodFather());
+                mafias.add(player);
                 numberOfMafia--;
             } else if (numberOfMafia == 2) {
                 player.setRole(new Role.SimpleMafia());
+                mafias.add(player);
                 numberOfMafia--;
             } else if (numberOfMafia == 3) {
                 player.setRole(new Role.DrLecter());
+                mafias.add(player);
                 numberOfMafia--;
             } else if (numberOfMafia > 3) {
                 player.setRole(new Role.SimpleMafia());
+                mafias.add(player);
                 numberOfMafia--;
             } else if (numberOfCitizens == 1) {
                 player.setRole(new Role.SimpleCitizen());
@@ -160,6 +165,32 @@ public class GameServer {
             } else {
                 player.setRole(new Role.SimpleCitizen());
                 numberOfCitizens--;
+            }
+
+        }
+    }
+
+    /**
+     * It will tell everybody their roles.
+     */
+    private static void introduce() {
+        for (ClientHandler clientHandler : clientHandlers) {
+            clientHandler.write("\nYou're " + clientHandler.getPlayer().getRole().toString() + "!\n");
+
+            if (clientHandler.getPlayer().getRole() instanceof Role.Mafia) {
+                clientHandler.write("The Mafia Team:");
+                for (Player player : mafias) {
+                    clientHandler.write("- " + player.getUsername() + " as " + player.getRole().toString());
+                }
+            }
+
+            if (clientHandler.getPlayer().getRole() instanceof Role.Mayor) {
+                for (Player player : players) {
+                    if (player.getRole() instanceof Role.Doctor) {
+                        clientHandler.write("The doctor is: " + player.getUsername());
+                        break;
+                    }
+                }
             }
 
         }

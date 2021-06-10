@@ -54,6 +54,14 @@ public class Player {
         return isReady;
     }
 
+    /**
+     * getter of the role field
+     * @return the role field
+     */
+    public Role getRole() {
+        return role;
+    }
+
     public void setRole(Role role) {
         this.role = role;
     }

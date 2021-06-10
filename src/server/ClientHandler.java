@@ -77,6 +77,26 @@ public class ClientHandler extends Thread{
         System.out.println("+ " + player.getUsername() + " is ready!");
     }
 
+    /**
+     * getter of the player field
+     * @return the player field
+     */
+    public Player getPlayer() {
+        return player;
+    }
+
+    /**
+     * sends a text to the client
+     * @param text the text which will be sent to the client
+     */
+    public void write(String text) {
+        try {
+            dataOutputStream.writeUTF(text);
+        } catch (IOException e) {
+            System.err.println("Couldn't send data to the client.");
+        }
+    }
+
     private class ClientReader extends Thread {
 
         @Override
