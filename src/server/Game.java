@@ -13,23 +13,23 @@ import java.util.Random;
  * @author Taha Elmi
  * @version 1
  */
-public class GameServer {
-    private static final GameServer instance = new GameServer(6);
+public class Game {
+    private static final Game instance = new Game(6);
     private static int numberOfPlayers;
     private static ArrayList<ClientHandler> clientHandlers;
     private static ArrayList<Player> players;
     private static ArrayList<Player> mafias;
     private static String state;
 
-    private GameServer(int numberOfPlayers) {
-        GameServer.numberOfPlayers = numberOfPlayers;
+    private Game(int numberOfPlayers) {
+        Game.numberOfPlayers = numberOfPlayers;
         players = new ArrayList<>();
         clientHandlers = new ArrayList<>();
         mafias = new ArrayList<>();
         state = "beginning";
     }
 
-    public static void main(String[] args) {
+    public void run() {
         waitForClients(2000);
         while (!checkIfReady());
         randomizePlayers();
@@ -38,10 +38,10 @@ public class GameServer {
     }
 
     /**
-     * It will give the single instance of the class GameServer, due to the use of SingleTon pattern
+     * It will give the single instance of the class Game, due to the use of SingleTon pattern
      * @return the instance
      */
-    public static GameServer getInstance() {
+    public static Game getInstance() {
         return instance;
     }
 

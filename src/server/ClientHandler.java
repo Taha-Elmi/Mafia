@@ -40,7 +40,7 @@ public class ClientHandler extends Thread{
 
     /**
      * This method will set a name for the player.
-     * It also checks if the name is duplicate or not, using checkName method of the GameServer class
+     * It also checks if the name is duplicate or not, using checkName method of the Game class
      */
     private void setName() {
         String response = "";
@@ -52,7 +52,7 @@ public class ClientHandler extends Thread{
                 System.err.println("Couldn't get data from the socket.");
             }
 
-            response = (GameServer.getInstance().checkName(name) ? "No" : "OK");
+            response = (Game.getInstance().checkName(name) ? "No" : "OK");
             player.setUsername(name);
 
             try {
@@ -117,7 +117,7 @@ public class ClientHandler extends Thread{
          * @param text input string received from the client
          */
         private void processText(String text) {
-            if (GameServer.getState().equals("beginning")) {
+            if (Game.getState().equals("beginning")) {
                 try {
                     dataOutputStream.writeUTF("Just wait for other players to get ready...");
                 } catch (IOException e) {

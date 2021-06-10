@@ -54,7 +54,7 @@ public class Client {
 
     /**
      * This method will set a name for the player.
-     * It also checks if the name is duplicate or not, using checkName method of the GameServer class
+     * It also checks if the name is duplicate or not, using checkName method of the Game class
      */
     private static void setName() {
         System.out.println("Enter a username for yourself:");
