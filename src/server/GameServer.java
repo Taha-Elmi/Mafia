@@ -18,11 +18,13 @@ public class GameServer {
     private static int port = 2000;
     private static int numberOfPlayers;
     private static ArrayList<Player> players;
+    private static ArrayList<ClientHandler> clientHandlers;
     private static String state;
 
     private GameServer(int numberOfPlayers) {
         GameServer.numberOfPlayers = numberOfPlayers;
         players = new ArrayList<>();
+        clientHandlers = new ArrayList<>();
         state = "beginning";
     }
 
@@ -30,6 +32,7 @@ public class GameServer {
         waitForClients();
         while (!checkIfReady());
         randomizePlayers();
+        giveRoles();
     }
 
     /**
@@ -51,6 +54,7 @@ public class GameServer {
         ServerSocket welcomingSocket = null;
         try {
             welcomingSocket = new ServerSocket(port);
+            System.out.println("The server is on the port " + port);
         } catch (IOException e) {
             System.err.println("The port " + port + " was not free. Trying the port " + (port + 1) + "...");
             port++;
@@ -70,6 +74,7 @@ public class GameServer {
             players.add(player);
             ClientHandler clientHandler = new ClientHandler(socket, player);
             clientHandler.start();
+            clientHandlers.add(clientHandler);
         }
     }
 
@@ -109,5 +114,54 @@ public class GameServer {
         while (players.size() != 0)
             temp.add(players.remove(random.nextInt(players.size())));
         players = temp;
+    }
+
+    /**
+     * It will give appropriate roles to every player, according to the number of players.
+     */
+    private static void giveRoles() {
+        int numberOfMafia = numberOfPlayers / 3;
+        int numberOfCitizens = numberOfPlayers - numberOfMafia;
+
+        for (Player player : players) {
+            if (numberOfMafia == 1) {
+                player.setRole(new Role.GodFather());
+                numberOfMafia--;
+            } else if (numberOfMafia == 2) {
+                player.setRole(new Role.SimpleMafia());
+                numberOfMafia--;
+            } else if (numberOfMafia == 3) {
+                player.setRole(new Role.DrLecter());
+                numberOfMafia--;
+            } else if (numberOfMafia > 3) {
+                player.setRole(new Role.SimpleMafia());
+                numberOfMafia--;
+            } else if (numberOfCitizens == 1) {
+                player.setRole(new Role.SimpleCitizen());
+                numberOfCitizens--;
+            } else if (numberOfCitizens == 2) {
+                player.setRole(new Role.Doctor());
+                numberOfCitizens--;
+            } else if (numberOfCitizens == 3) {
+                player.setRole(new Role.Detective());
+                numberOfCitizens--;
+            } else if (numberOfCitizens == 4) {
+                player.setRole(new Role.Psychiatrist());
+                numberOfCitizens--;
+            } else if (numberOfCitizens == 5) {
+                player.setRole(new Role.Professional());
+                numberOfCitizens--;
+            } else if (numberOfCitizens == 6) {
+                player.setRole(new Role.DieHard());
+                numberOfCitizens--;
+            } else if (numberOfCitizens == 7) {
+                player.setRole(new Role.Mayor());
+                numberOfCitizens--;
+            } else {
+                player.setRole(new Role.SimpleCitizen());
+                numberOfCitizens--;
+            }
+
+        }
     }
 }

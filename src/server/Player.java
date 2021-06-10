@@ -53,4 +53,8 @@ public class Player {
     public boolean isReady() {
         return isReady;
     }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }
