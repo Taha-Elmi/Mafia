@@ -57,7 +57,7 @@ public class Game {
                 System.err.println("An error occurred.");
             }
         }
-        System.out.println("The game is finished");
+        finish();
     }
 
     /**
@@ -427,5 +427,28 @@ public class Game {
         int numberOfCitizens = countCitizens();
 
         return numberOfMafias == numberOfCitizens || numberOfMafias == 0;
+    }
+
+    /**
+     * It will declare the winners of the game, the roles, and finish the game.
+     */
+    private void finish() {
+        chat(ConsoleColors.ANSI_BLUE + "\n\nGOD: The game is finished !!!");
+        if (countMafias() == 0)
+            chat(ConsoleColors.ANSI_RED + "The Citizens" + ConsoleColors.ANSI_BLUE + " won the game. Congrats citizens :)))))\n");
+        else
+            chat(ConsoleColors.ANSI_RED + "The Mafias" + ConsoleColors.ANSI_BLUE + " won the game. Congrats mafias :)))))\n");
+
+        chat(ConsoleColors.ANSI_PURPLE + "The Mafia Team:");
+        for (Player mafia : mafias)
+            chat("- " + mafia.getUsername() + " as " + mafia.getRole().toString());
+
+        chat(ConsoleColors.ANSI_CYAN + "\nThe Citizen Team:");
+        for (Player player : players) {
+            if (!(player.getRole() instanceof Role.Mafia))
+                chat("- " + player.getUsername() + " as " + player.getRole().toString());
+        }
+
+        chat(ConsoleColors.ANSI_BLUE + "\n\nGOD: It was a nice game =))\nHave fun :))))" + ConsoleColors.ANSI_RESET);
     }
 }

@@ -7,7 +7,7 @@ public class Role {
     public static class GodFather extends Role implements Mafia{
         @Override
         public String toString() {
-            return "God Father";
+            return "Godfather";
         }
     }
     public static class SimpleMafia extends Role implements Mafia{
