@@ -77,6 +77,22 @@ public class Game {
     }
 
     /**
+     * getter of the clientHandlers list
+     * @return the clientHandlers list
+     */
+    public ArrayList<ClientHandler> getClientHandlers() {
+        return clientHandlers;
+    }
+
+    /**
+     * getter of the mafias field
+     * @return the mafias field
+     */
+    public ArrayList<Player> getMafias() {
+        return mafias;
+    }
+
+    /**
      * setter of the state field
      * @param state the new state
      */
@@ -247,7 +263,7 @@ public class Game {
      * It will change the game state to "night" and do necessary things that have to be done at night.
      */
     private void dusk() {
-        setState("night");
+        setState("night-lecter");
         chat(ConsoleColors.ANSI_BLUE + "GOD: It's night, time to sleep..." + ConsoleColors.ANSI_RESET);
     }
 
@@ -264,7 +280,7 @@ public class Game {
      * it will count the number of alive mafias
      * @return number of alive mafias
      */
-    private int countMafias() {
+    public int countMafias() {
         int answer = 0;
         for (Player player : players) {
             if (player.getRole() instanceof Role.Mafia && player.isAlive())

@@ -150,10 +150,68 @@ public class ClientHandler extends Thread{
                 return;
             }
 
+            if (Game.getInstance().getState().equals("night-lecter") && player.getRole() instanceof Role.DrLecter) {
+                try {
+                    int survivor = Integer.parseInt(text);
+                    if (survivor <= 0 || survivor > Game.getInstance().countMafias())
+                        throw new IndexOutOfBoundsException();
+                    ((Role.DrLecter) player.getRole()).setSurvivor(survivor);
+
+                    write("OK, now you can recommend a player to the godfather by their index: ");
+                    int index = 1;
+                    for (ClientHandler ch : Game.getInstance().getClientHandlers()) {
+                        if (ch.getPlayer().isAlive()) {
+                            write(index + "- " + ConsoleColors.ANSI_GREEN + ch.getPlayer().getUsername() + ConsoleColors.ANSI_RESET);
+                            index++;
+                        }
+                    }
+
+                    Game.getInstance().setState("night");
+                } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                    write("Invalid input. Enter the index of one of the players.");
+                }
+                return;
+            }
+
+            if ((Game.getInstance().getState().equals("night") || Game.getInstance().getState().equals("night-lecter"))
+                && (player.getRole().canSetTarget())) {
+                try {
+                    int target = Integer.parseInt(text);
+                    if (target <= 0 || target > Game.getInstance().countAlivePlayers())
+                        throw new IndexOutOfBoundsException();
+                    player.getRole().setTarget(target);
+                    write("Your vote has been submitted. You can change it until the end of the night.");
+                } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                    write("Invalid input. Enter the index of one of the players.");
+                }
+                return;
+            }
+
+            if (Game.getInstance().getState().equals("night") && player.getRole() instanceof Role.DieHard) {
+                try {
+                    int choice = Integer.parseInt(text);
+                    if (choice != 0 && choice != 1)
+                        throw new IllegalArgumentException();
+                    if (((Role.DieHard) player.getRole()).getInquiry() > 0 && choice == 1) {
+                        ((Role.DieHard) player.getRole()).setWantInquiry(true);
+                        ((Role.DieHard) player.getRole()).setInquiry(((Role.DieHard) player.getRole()).getInquiry() - 1);
+                        write("Done");
+                    } else if (choice == 0) {
+                        write("ok.");
+                    } else {
+                        write("You're out of limit.");
+                    }
+                } catch (IllegalArgumentException e) {
+                    write("Invalid input. Enter the index of one of the players.");
+                }
+                return;
+            }
+
             if (Game.getInstance().getState().equals("night")) {
                 write("It's night...");
                 return;
             }
+
         }
     }
 }
