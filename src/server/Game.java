@@ -452,6 +452,50 @@ public class Game {
     }
 
     /**
+     * It will search for the appropriate player, according to its index in the clientHandlers list.
+     * It's useful when the players are doing their night act by choosing the index of the players.
+     * @param index the index of the player the client wants
+     * @return the player which was wanted
+     */
+    public Player findAlivePlayerByIndex(int index) {
+        if (index < 1 || index > countAlivePlayers())
+            throw new IllegalArgumentException();
+
+        int iterator = 1;
+        for (ClientHandler clientHandler : clientHandlers) {
+            if (clientHandler.getPlayer().isAlive()) {
+                if (iterator == index)
+                    return clientHandler.getPlayer();
+                index++;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * It will search for the appropriate mafia, according to its index.
+     * It's useful when we want to find out which mafia has Dr.Lecter revived.
+     * @param index the index of the mafia the client wants
+     * @return the mafia which was wanted
+     */
+    public Player findAliveMafiaByIndex(int index) {
+        if (index < 1 || index > countMafias())
+            throw new IllegalArgumentException();
+
+        int iterator = 1;
+        for (Player player : getMafias()) {
+            if (player.isAlive()) {
+                if (iterator == index)
+                    return player;
+                index++;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * It checks if the game is finished or not
      * @return true if finished, and false otherwise
      */
@@ -484,4 +528,5 @@ public class Game {
 
         chat(ConsoleColors.ANSI_BLUE + "\n\nGOD: It was a nice game =))\nHave fun :))))" + ConsoleColors.ANSI_RESET);
     }
+
 }
