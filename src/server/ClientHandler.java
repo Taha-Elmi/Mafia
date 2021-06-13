@@ -231,11 +231,21 @@ public class ClientHandler extends Thread{
                     int survivor = Integer.parseInt(text);
                     if (survivor <= 0 || survivor > Game.getInstance().countMafias())
                         throw new IndexOutOfBoundsException();
+
+                    //check if Dr.Lecter is reviving himself for more than one time or not
+                    if (Game.getInstance().findAliveMafiaByIndex(survivor) == player) {
+                        if (role.getNumberOfRevivingHimself() == 0) {
+                            write("You can't revive yourself because you've already done it once. Try to revive another mafia.");
+                            return;
+                        }
+                        role.setNumberOfRevivingHimself(0);
+                    }
+
                     role.setSurvivor(survivor);
                     role.setDoneReviving(true);
                     write("OK.");
 
-                    //finding the clientHandler of DrLecter to pass it to the nightAct method to do its second task
+                    //finding the clientHandler of Dr.Lecter to pass it to the nightAct method to do its second task
                     ClientHandler ch = null;
                     for (ClientHandler clientHandler : Game.getInstance().getClientHandlers()) {
                         if (clientHandler.getPlayer().getRole() instanceof Role.DrLecter) {

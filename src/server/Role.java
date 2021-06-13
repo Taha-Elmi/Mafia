@@ -136,6 +136,14 @@ public abstract class Role {
         @Override
         public void nightAct(ClientHandler clientHandler) {
             if (!doneReviving) {
+                //check if there is any player that he can save or not
+                if (Game.getInstance().countMafias() == 1 && numberOfRevivingHimself == 0) {
+                    clientHandler.write("Seems that you can't revive anyone :)\nSo do your mafia stuff.");
+                    setDoneReviving(true);
+                    nightAct(clientHandler);
+                    return;
+                }
+
                 clientHandler.write("Save a mafia by choosing the appropriate index.");
                 int index = 1;
                 for (Player player : Game.getInstance().getMafias()) {
