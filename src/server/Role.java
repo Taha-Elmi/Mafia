@@ -3,6 +3,7 @@ package server;
 public abstract class Role {
     private int target;
     private boolean canSetTarget;
+    private boolean doneJob;
 
     public int getTarget() {
         return target;
@@ -20,6 +21,14 @@ public abstract class Role {
         this.canSetTarget = canSetTarget;
     }
 
+    public void setDoneJob(boolean doneJob) {
+        this.doneJob = doneJob;
+    }
+
+    public boolean isDoneJob() {
+        return doneJob;
+    }
+
     public interface Mafia {}
 
     public abstract void nightAct(ClientHandler clientHandler);
@@ -29,6 +38,7 @@ public abstract class Role {
         public GodFather() {
             setTarget(0);
             setCanSetTarget(true);
+            setDoneJob(false);
         }
 
         @Override
@@ -53,6 +63,7 @@ public abstract class Role {
         public SimpleMafia() {
             setTarget(0);
             setCanSetTarget(true);
+            setDoneJob(false);
         }
 
         @Override
@@ -62,7 +73,18 @@ public abstract class Role {
 
         @Override
         public void nightAct(ClientHandler clientHandler) {
-            clientHandler.write("You can recommend a player to the godfather by their index: ");
+            if (Game.getInstance().findRole(new GodFather()) != null)
+                clientHandler.write("You can recommend a player to the godfather by choosing the appropriate index: ");
+            else if (Game.getInstance().findRole(new DrLecter()) != null)
+                clientHandler.write("You can recommend a player to Dr.Lecter by choosing the appropriate index: ");
+            else if (Game.getInstance().countMafias() == 1)
+                clientHandler.write("You can kill a player by choosing the appropriate index: ");
+            else if (Game.getInstance().findRole(new SimpleMafia()) == clientHandler.getPlayer())
+                clientHandler.write("You can see other mafia's recommendations and kill a player by choosing the appropriate index.");
+            else
+                clientHandler.write("You can recommend a player to " + Game.getInstance().findRole(new SimpleMafia()).getUsername() +" by choosing the appropriate index: ");
+
+
             int index = 1;
             for (ClientHandler ch : Game.getInstance().getClientHandlers()) {
                 if (ch.getPlayer().isAlive()) {
@@ -79,6 +101,7 @@ public abstract class Role {
         public DrLecter() {
             setTarget(0);
             setCanSetTarget(true);
+            setDoneJob(false);
             survivor = 0;
             numberOfRevivingHimself = 1;
         }
@@ -102,15 +125,29 @@ public abstract class Role {
 
         @Override
         public void nightAct(ClientHandler clientHandler) {
-            clientHandler.write("Save a mafia by choosing the appropriate index.");
-            int index = 1;
-            for (Player player : Game.getInstance().getMafias()) {
-                if (player.isAlive()) {
-                    clientHandler.write(index + "- " + ConsoleColors.ANSI_GREEN + player.getUsername() + ConsoleColors.ANSI_RESET);
-                    index++;
+            if (Game.getInstance().getState().equals("night-lecter")) {
+                clientHandler.write("Save a mafia by choosing the appropriate index.");
+                int index = 1;
+                for (Player player : Game.getInstance().getMafias()) {
+                    if (player.isAlive()) {
+                        clientHandler.write(index + "- " + ConsoleColors.ANSI_GREEN + player.getUsername() + ConsoleColors.ANSI_RESET);
+                        index++;
+                    }
+                }
+            } else {
+                if (Game.getInstance().findRole(new GodFather()) != null)
+                    clientHandler.write("You can recommend a player to the godfather by choosing the appropriate index: ");
+                else
+                    clientHandler.write("You can see other mafia's recommendations and kill a player by choosing the appropriate index.");
+
+                int index = 1;
+                for (ClientHandler ch : Game.getInstance().getClientHandlers()) {
+                    if (ch.getPlayer().isAlive()) {
+                        clientHandler.write(index + "- " + ConsoleColors.ANSI_GREEN + ch.getPlayer().getUsername() + ConsoleColors.ANSI_RESET);
+                        index++;
+                    }
                 }
             }
-
         }
 
     }
@@ -121,6 +158,7 @@ public abstract class Role {
         public Doctor() {
             setTarget(0);
             setCanSetTarget(true);
+            setDoneJob(false);
             numberOfRevivingHimself = 1;
         }
 
@@ -147,6 +185,7 @@ public abstract class Role {
         public Detective() {
             setTarget(0);
             setCanSetTarget(true);
+            setDoneJob(false);
             numberOfDetects = 1;
         }
 
@@ -180,6 +219,7 @@ public abstract class Role {
         public Professional() {
             setTarget(0);
             setCanSetTarget(true);
+            setDoneJob(false);
         }
 
         @Override
@@ -203,6 +243,7 @@ public abstract class Role {
 
         public SimpleCitizen() {
             setCanSetTarget(false);
+            setDoneJob(false);
         }
 
         @Override
@@ -217,6 +258,7 @@ public abstract class Role {
 
         public Mayor() {
             setCanSetTarget(false);
+            setDoneJob(false);
         }
 
         @Override
@@ -232,6 +274,7 @@ public abstract class Role {
         public Psychiatrist() {
             setTarget(0);
             setCanSetTarget(true);
+            setDoneJob(false);
         }
 
         @Override
@@ -257,6 +300,7 @@ public abstract class Role {
 
         public DieHard() {
             setCanSetTarget(false);
+            setDoneJob(false);
             wantInquiry = false;
             inquiry = 2;
         }

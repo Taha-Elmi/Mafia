@@ -187,23 +187,9 @@ public class ClientHandler extends Thread{
                 return;
             }
 
-            if (Game.getInstance().getState().equals("night") && player.getRole() instanceof Role.DieHard) {
-                try {
-                    int choice = Integer.parseInt(text);
-                    if (choice != 0 && choice != 1)
-                        throw new IllegalArgumentException();
-                    if (((Role.DieHard) player.getRole()).getInquiry() > 0 && choice == 1) {
-                        ((Role.DieHard) player.getRole()).setWantInquiry(true);
-                        ((Role.DieHard) player.getRole()).setInquiry(((Role.DieHard) player.getRole()).getInquiry() - 1);
-                        write("Done");
-                    } else if (choice == 0) {
-                        write("ok.");
-                    } else {
-                        write("You're out of limit.");
-                    }
-                } catch (IllegalArgumentException e) {
-                    write("Invalid input. Enter the index of one of the players.");
-                }
+            if ((Game.getInstance().getState().equals("night-lecter") || Game.getInstance().getState().equals("nigth"))
+                    && player.getRole() instanceof Role.DieHard) {
+                dieHardNightAct(text);
                 return;
             }
 
@@ -212,6 +198,25 @@ public class ClientHandler extends Thread{
                 return;
             }
 
+        }
+
+        private void dieHardNightAct(String text) {
+            try {
+                int choice = Integer.parseInt(text);
+                if (choice != 0 && choice != 1)
+                    throw new IllegalArgumentException();
+                if (((Role.DieHard) player.getRole()).getInquiry() > 0 && choice == 1) {
+                    ((Role.DieHard) player.getRole()).setWantInquiry(true);
+                    ((Role.DieHard) player.getRole()).setInquiry(((Role.DieHard) player.getRole()).getInquiry() - 1);
+                    write("Done");
+                } else if (choice == 0) {
+                    write("ok.");
+                } else {
+                    write("You're out of limit.");
+                }
+            } catch (IllegalArgumentException e) {
+                write("Invalid input. Enter the index of one of the players.");
+            }
         }
     }
 }
