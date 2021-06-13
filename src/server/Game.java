@@ -43,14 +43,14 @@ public class Game {
         while (true){
             try {
                 dawn();
-                Thread.sleep(60 * 1000);
+                Thread.sleep(30 * 1000);
                 declareCandidates();
                 Thread.sleep(30 * 1000);
                 processVotes();
                 if (checkIfFinished())
                     break;
                 dusk();
-                Thread.sleep(10 * 1000);
+                Thread.sleep(30 * 1000);
                 if (checkIfFinished())
                     break;
             } catch (InterruptedException e) {
@@ -265,6 +265,10 @@ public class Game {
     private void dusk() {
         setState("night-lecter");
         chat(ConsoleColors.ANSI_BLUE + "GOD: It's night, time to sleep..." + ConsoleColors.ANSI_RESET);
+        for (ClientHandler clientHandler : clientHandlers) {
+            if (clientHandler.getPlayer().isAlive())
+                clientHandler.getPlayer().getRole().nightAct(clientHandler);
+        }
     }
 
     /**
@@ -432,6 +436,19 @@ public class Game {
         }
         checkInactivity();
         resetVotes();
+    }
+
+    /**
+     * This method will give the player with a specific role given in the parameter
+     * @param wanted the role of the player we want
+     * @return the player with the role
+     */
+    public Player findRole(Role wanted) {
+        for (Player player : players) {
+            if (player.getRole().toString().equals(wanted.toString()))
+                return player;
+        }
+        return null;
     }
 
     /**
