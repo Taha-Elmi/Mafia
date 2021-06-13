@@ -328,6 +328,10 @@ public abstract class Role {
 
         @Override
         public void nightAct(ClientHandler clientHandler) {
+            if (inquiry < 1) {
+                clientHandler.write("You're out of limit. Have a good night :)");
+                return;
+            }
             clientHandler.write("Do you want an inquiry? 1- yes / 2- no");
         }
     }

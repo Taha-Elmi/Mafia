@@ -193,29 +193,43 @@ public class ClientHandler extends Thread{
                 return;
             }
 
-            if (Game.getInstance().getState().equals("night")) {
+            if (Game.getInstance().getState().equals("night-lecter") || Game.getInstance().getState().equals("night")) {
                 write("It's night...");
                 return;
             }
 
         }
 
+        private void godfatherNightAct(String text) {
+
+        }
+
         private void dieHardNightAct(String text) {
+            Player player = Game.getInstance().findRole(new Role.DieHard());
+            Role.DieHard role = (Role.DieHard) player.getRole();
+            if (role.getInquiry() < 1) {
+                write("You're out of limit. You can't do anything. Try to sleep.");
+                return;
+            }
+
             try {
                 int choice = Integer.parseInt(text);
                 if (choice != 0 && choice != 1)
                     throw new IllegalArgumentException();
-                if (((Role.DieHard) player.getRole()).getInquiry() > 0 && choice == 1) {
-                    ((Role.DieHard) player.getRole()).setWantInquiry(true);
-                    ((Role.DieHard) player.getRole()).setInquiry(((Role.DieHard) player.getRole()).getInquiry() - 1);
-                    write("Done");
-                } else if (choice == 0) {
-                    write("ok.");
-                } else {
-                    write("You're out of limit.");
+
+                switch (choice) {
+                    case 1:
+                        role.setInquiry(role.getInquiry() - 1);
+                        role.setWantInquiry(true);
+                        role.setDoneJob(true);
+                        write("OK. We will have an inquiry tomorrow.");
+                        return;
+                    case 0:
+                        role.setDoneJob(true);
+                        write("OK.");
                 }
             } catch (IllegalArgumentException e) {
-                write("Invalid input. Enter the index of one of the players.");
+                write("Invalid input. Enter 1 if you want inquiry or 0 otherwise.");
             }
         }
     }
