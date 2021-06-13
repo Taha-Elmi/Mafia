@@ -263,7 +263,6 @@ public class ClientHandler extends Thread{
             }
         }
 
-
         private void dieHardNightAct(String text) {
             Player player = Game.getInstance().findRole(new Role.DieHard());
             Role.DieHard role = (Role.DieHard) player.getRole();

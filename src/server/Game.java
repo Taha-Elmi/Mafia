@@ -263,7 +263,7 @@ public class Game {
      * It will change the game state to "night" and do necessary things that have to be done at night.
      */
     private void dusk() {
-        setState("night-lecter");
+        setState("night");
         chat(ConsoleColors.ANSI_BLUE + "GOD: It's night, time to sleep..." + ConsoleColors.ANSI_RESET);
         for (ClientHandler clientHandler : clientHandlers) {
             if (clientHandler.getPlayer().isAlive())
