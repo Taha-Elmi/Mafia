@@ -199,16 +199,72 @@ public class ClientHandler extends Thread{
             }
 
         }
+        private void mafiaNightAct(String text) {
+            Role role = player.getRole();
 
-        private void godfatherNightAct(String text) {
+            if (role.isDoneJob()) {
+                write("You've done your job. Try to sleep.");
+                return;
+            }
 
+            try {
+                int target = Integer.parseInt(text);
+                if (target <= 0 || target > Game.getInstance().countAlivePlayers())
+                    throw new IndexOutOfBoundsException();
+                player.getRole().setTarget(target);
+                write("Done. Now try to sleep.");
+                role.setDoneJob(true);
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                write("Invalid input. Enter the index of one of the players.");
+            }
         }
+
+        private void drLecterNightAct(String text) {
+            Role.DrLecter role = (Role.DrLecter) player.getRole();
+
+            if (role.isDoneJob()) {
+                write("You've done your job. Try to sleep.");
+            }
+
+            if (!role.isDoneReviving()) {
+                try {
+                    int survivor = Integer.parseInt(text);
+                    if (survivor <= 0 || survivor > Game.getInstance().countMafias())
+                        throw new IndexOutOfBoundsException();
+                    role.setSurvivor(survivor);
+                    role.setDoneReviving(true);
+                    write("OK.");
+
+                    //finding the clientHandler of DrLecter to pass it to the nightAct method to do its second task
+                    ClientHandler ch = null;
+                    for (ClientHandler clientHandler : Game.getInstance().getClientHandlers()) {
+                        if (clientHandler.getPlayer().getRole() instanceof Role.DrLecter) {
+                            ch = clientHandler;
+                            break;
+                        }
+                    }
+
+                    role.nightAct(ch);
+                } catch (IllegalArgumentException e) {
+                    write("Invalid input. Enter the index of one of the players.");
+                }
+            } else {
+                mafiaNightAct(text);
+            }
+        }
+
 
         private void dieHardNightAct(String text) {
             Player player = Game.getInstance().findRole(new Role.DieHard());
             Role.DieHard role = (Role.DieHard) player.getRole();
+
             if (role.getInquiry() < 1) {
                 write("You're out of limit. You can't do anything. Try to sleep.");
+                return;
+            }
+
+            if (role.isDoneJob()) {
+                write("You've done your work. Try to sleep.");
                 return;
             }
 

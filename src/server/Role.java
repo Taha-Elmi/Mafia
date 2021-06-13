@@ -97,11 +97,13 @@ public abstract class Role {
     public static class DrLecter extends Role implements Mafia{
         private int survivor;
         private int numberOfRevivingHimself;
+        private boolean doneReviving;
 
         public DrLecter() {
             setTarget(0);
             setCanSetTarget(true);
             setDoneJob(false);
+            setDoneReviving(false);
             survivor = 0;
             numberOfRevivingHimself = 1;
         }
@@ -118,6 +120,14 @@ public abstract class Role {
             return numberOfRevivingHimself;
         }
 
+        public boolean isDoneReviving() {
+            return doneReviving;
+        }
+
+        public void setDoneReviving(boolean doneReviving) {
+            this.doneReviving = doneReviving;
+        }
+
         @Override
         public String toString() {
             return "Dr.Lecter";
@@ -125,7 +135,7 @@ public abstract class Role {
 
         @Override
         public void nightAct(ClientHandler clientHandler) {
-            if (Game.getInstance().getState().equals("night-lecter")) {
+            if (!doneReviving) {
                 clientHandler.write("Save a mafia by choosing the appropriate index.");
                 int index = 1;
                 for (Player player : Game.getInstance().getMafias()) {
@@ -136,9 +146,9 @@ public abstract class Role {
                 }
             } else {
                 if (Game.getInstance().findRole(new GodFather()) != null)
-                    clientHandler.write("You can recommend a player to the godfather by choosing the appropriate index: ");
+                    clientHandler.write("Now you can recommend a player to the godfather by choosing the appropriate index: ");
                 else
-                    clientHandler.write("You can see other mafia's recommendations and kill a player by choosing the appropriate index.");
+                    clientHandler.write("Now you can see other mafia's recommendations and kill a player by choosing the appropriate index.");
 
                 int index = 1;
                 for (ClientHandler ch : Game.getInstance().getClientHandlers()) {
