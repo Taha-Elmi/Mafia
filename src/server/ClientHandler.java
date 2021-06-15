@@ -165,6 +165,7 @@ public class ClientHandler extends Thread{
             }
 
         }
+
         private void mafiaNightAct(String text) {
             Role role = player.getRole();
 
@@ -178,6 +179,8 @@ public class ClientHandler extends Thread{
                 if (target <= 0 || target > Game.getInstance().countAlivePlayers())
                     throw new IndexOutOfBoundsException();
                 player.getRole().setTarget(target);
+                Game.getInstance().mafiaChat(ConsoleColors.ANSI_PURPLE + player.getUsername() + " recommends: " +
+                        Game.getInstance().findAlivePlayerByIndex(target).getUsername() + ConsoleColors.ANSI_RESET);
                 write("Done. Now try to sleep.");
                 role.setDoneJob(true);
             } catch (NumberFormatException | IndexOutOfBoundsException e) {

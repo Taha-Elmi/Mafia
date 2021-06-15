@@ -2,7 +2,6 @@ package server;
 
 public abstract class Role {
     private int target;
-    private boolean canSetTarget;
     private boolean doneJob;
 
     public int getTarget() {
@@ -11,14 +10,6 @@ public abstract class Role {
 
     public void setTarget(int target) {
         this.target = target;
-    }
-
-    public boolean canSetTarget() {
-        return canSetTarget;
-    }
-
-    public void setCanSetTarget(boolean canSetTarget) {
-        this.canSetTarget = canSetTarget;
     }
 
     public void setDoneJob(boolean doneJob) {
@@ -37,7 +28,6 @@ public abstract class Role {
 
         public GodFather() {
             setTarget(0);
-            setCanSetTarget(true);
             setDoneJob(false);
         }
 
@@ -62,7 +52,6 @@ public abstract class Role {
 
         public SimpleMafia() {
             setTarget(0);
-            setCanSetTarget(true);
             setDoneJob(false);
         }
 
@@ -101,7 +90,6 @@ public abstract class Role {
 
         public DrLecter() {
             setTarget(0);
-            setCanSetTarget(true);
             setDoneJob(false);
             setDoneReviving(false);
             survivor = 0;
@@ -110,6 +98,10 @@ public abstract class Role {
 
         public void setSurvivor(int survivor) {
             this.survivor = survivor;
+        }
+
+        public int getSurvivor() {
+            return survivor;
         }
 
         public void setNumberOfRevivingHimself(int numberOfRevivingHimself) {
@@ -175,7 +167,6 @@ public abstract class Role {
 
         public Doctor() {
             setTarget(0);
-            setCanSetTarget(true);
             setDoneJob(false);
             numberOfRevivingHimself = 1;
         }
@@ -216,7 +207,6 @@ public abstract class Role {
 
         public Detective() {
             setTarget(0);
-            setCanSetTarget(true);
             setDoneJob(false);
             numberOfDetects = 1;
         }
@@ -250,7 +240,6 @@ public abstract class Role {
 
         public Professional() {
             setTarget(0);
-            setCanSetTarget(true);
             setDoneJob(false);
         }
 
@@ -274,7 +263,6 @@ public abstract class Role {
     public static class SimpleCitizen extends Role {
 
         public SimpleCitizen() {
-            setCanSetTarget(false);
             setDoneJob(false);
         }
 
@@ -289,7 +277,6 @@ public abstract class Role {
     public static class Mayor extends Role {
 
         public Mayor() {
-            setCanSetTarget(false);
             setDoneJob(false);
         }
 
@@ -305,7 +292,6 @@ public abstract class Role {
 
         public Psychiatrist() {
             setTarget(0);
-            setCanSetTarget(true);
             setDoneJob(false);
         }
 
@@ -331,7 +317,6 @@ public abstract class Role {
         private int inquiry;
 
         public DieHard() {
-            setCanSetTarget(false);
             setDoneJob(false);
             wantInquiry = false;
             inquiry = 2;

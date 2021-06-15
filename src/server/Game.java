@@ -15,7 +15,7 @@ import java.util.Random;
  * @version 1
  */
 public class Game {
-    private static final Game instance = new Game(4);
+    private static final Game instance = new Game(9);
     private int numberOfPlayers;
     private ArrayList<ClientHandler> clientHandlers;
     private ArrayList<Player> players;
@@ -43,14 +43,16 @@ public class Game {
         while (true){
             try {
                 dawn();
-                Thread.sleep(30 * 1000);
+                Thread.sleep(10 * 1000);
                 declareCandidates();
                 Thread.sleep(30 * 1000);
                 processVotes();
                 if (checkIfFinished())
                     break;
                 dusk();
-                Thread.sleep(30 * 1000);
+                Thread.sleep(90 * 1000);
+                explainLastNight();
+                resetPlayers();
                 if (checkIfFinished())
                     break;
             } catch (InterruptedException e) {
@@ -274,6 +276,20 @@ public class Game {
     }
 
     /**
+     * It will reset the fields of the players.
+     */
+    private void resetPlayers() {
+        for (Player player : players) {
+            player.getRole().setTarget(0);
+            player.getRole().setDoneJob(false);
+            if (player.getRole() instanceof Role.DrLecter) {
+                ((Role.DrLecter) player.getRole()).setSurvivor(0);
+                ((Role.DrLecter) player.getRole()).setDoneReviving(false);
+            }
+        }
+    }
+
+    /**
      * It will process the decision of the mafias and the decision of the doctor and make the changes.
      * @param deadPlayers the ArrayList of players, to store the dead players in one place to declare them next morning.
      */
@@ -311,7 +327,8 @@ public class Game {
 
         Player victim = findAlivePlayerByIndex(professional.getRole().getTarget());
         if (victim.getRole() instanceof Role.Mafia) {
-            if (drLecter == null || drLecter.getRole().getTarget() == 0 || findAliveMafiaByIndex(drLecter.getRole().getTarget()) != victim) {
+            if (drLecter == null || ((Role.DrLecter) drLecter.getRole()).getSurvivor() == 0
+                    || findAliveMafiaByIndex(((Role.DrLecter) drLecter.getRole()).getSurvivor()) != victim) {
                 kill(victim);
                 deadPlayers.add(victim);
             }
@@ -358,7 +375,6 @@ public class Game {
     private void dawn() {
         day++;
         chat(ConsoleColors.ANSI_YELLOW + "\n===============\nDay" + day + "\n===============" + ConsoleColors.ANSI_RESET);
-        explainLastNight();
         chat(ConsoleColors.ANSI_BLUE + "GOD: Wake Up. You can discuss now for 5 minute..." + ConsoleColors.ANSI_RESET);
         setState("day");
     }
@@ -382,6 +398,17 @@ public class Game {
     protected void chat(String text) {
         for (ClientHandler clientHandler : clientHandlers)
             clientHandler.write(text);
+    }
+
+    /**
+     * implements chatting between mafias. Sending texts to mafias.
+     * @param text the message
+     */
+    protected void mafiaChat(String text) {
+        for (ClientHandler clientHandler : clientHandlers) {
+            if (clientHandler.getPlayer().getRole() instanceof Role.Mafia)
+                clientHandler.write(text);
+        }
     }
 
     /**
@@ -570,7 +597,7 @@ public class Game {
             if (clientHandler.getPlayer().isAlive()) {
                 if (iterator == index)
                     return clientHandler.getPlayer();
-                index++;
+                iterator++;
             }
         }
 
