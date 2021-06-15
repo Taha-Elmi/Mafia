@@ -15,7 +15,7 @@ import java.util.Random;
  * @version 1
  */
 public class Game {
-    private static final Game instance = new Game(9);
+    private static final Game instance = new Game(10);
     private int numberOfPlayers;
     private ArrayList<ClientHandler> clientHandlers;
     private ArrayList<Player> players;
@@ -43,7 +43,7 @@ public class Game {
         while (true){
             try {
                 dawn();
-                Thread.sleep(10 * 1000);
+                Thread.sleep(20 * 1000);
                 declareCandidates();
                 Thread.sleep(30 * 1000);
                 processVotes();
@@ -537,8 +537,30 @@ public class Game {
             player.setVote(0);
     }
 
+    /**
+     * It will ask the mayor if he wants to cancel the voting or not.
+     * @return true if the mayor cancels the voting and false otherwise
+     */
     private boolean askMayor() {
-        return true;
+        setState("mayor-time");
+        Player mayor = findRole(new Role.Mayor());
+
+        //finding clientHandler of the mayor
+        ClientHandler mayorClientHandler = null;
+        for (ClientHandler clientHandler : clientHandlers) {
+            if (clientHandler.getPlayer() == mayor) {
+                mayorClientHandler = clientHandler;
+                break;
+            }
+        }
+
+        mayorClientHandler.write("Do you want to cancel the voting? 1- yes / 0- no");
+        try {
+            Thread.sleep(5 * 1000);
+        } catch (InterruptedException e) {
+            System.err.println("An error occurred during the mayor-time.");
+        }
+        return ((Role.Mayor)mayor.getRole()).isCancel();
     }
 
     /**

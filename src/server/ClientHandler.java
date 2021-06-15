@@ -150,6 +150,13 @@ public class ClientHandler extends Thread{
                 return;
             }
 
+            if (Game.getInstance().getState().equals("mayor-time")) {
+                if (player.getRole() instanceof Role.Mayor)
+                    mayorTime(text);
+                else
+                    write("Wait for the mayor to decide for the voting.");
+            }
+
             if (Game.getInstance().getState().equals("night")) {
                 String role = player.getRole().toString();
                 switch (role) {
@@ -331,7 +338,6 @@ public class ClientHandler extends Thread{
         }
 
         private void dieHardNightAct(String text) {
-            Player player = Game.getInstance().findRole(new Role.DieHard());
             Role.DieHard role = (Role.DieHard) player.getRole();
 
             if (role.getInquiry() < 1) {
@@ -365,6 +371,32 @@ public class ClientHandler extends Thread{
             }
         }
 
+        private void mayorTime(String text) {
+            Role.Mayor role = (Role.Mayor) player.getRole();
 
+            if (role.isDoneJob()) {
+                write("We've got your answer, dear mayor. It's not mutable.");
+                return;
+            }
+
+            try {
+                int choice = Integer.parseInt(text);
+                if (choice != 0 && choice != 1)
+                    throw new IllegalArgumentException();
+
+                switch (choice) {
+                    case 1:
+                        role.setCancel(true);
+                        role.setDoneJob(true);
+                        write("OK. The voting will be canceled.");
+                        return;
+                    case 0:
+                        role.setDoneJob(true);
+                        write("OK. The voting won't be canceled.");
+                }
+            } catch (IllegalArgumentException e) {
+                write("Invalid input. Enter 1 if you want inquiry or 0 otherwise.");
+            }
+        }
     }
 }

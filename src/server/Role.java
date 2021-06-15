@@ -268,9 +268,19 @@ public abstract class Role {
         public void nightAct(ClientHandler clientHandler) {}
     }
     public static class Mayor extends Role {
+        private boolean cancel;
 
         public Mayor() {
             setDoneJob(false);
+            cancel = false;
+        }
+
+        public boolean isCancel() {
+            return cancel;
+        }
+
+        public void setCancel(boolean cancel) {
+            this.cancel = cancel;
         }
 
         @Override
@@ -341,7 +351,7 @@ public abstract class Role {
                 clientHandler.write("You're out of limit. Have a good night :)");
                 return;
             }
-            clientHandler.write("Do you want an inquiry? 1- yes / 2- no");
+            clientHandler.write("Do you want an inquiry? 1- yes / 0- no");
         }
     }
 }
