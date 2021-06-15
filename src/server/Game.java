@@ -15,7 +15,7 @@ import java.util.Random;
  * @version 1
  */
 public class Game {
-    private static final Game instance = new Game(6);
+    private static final Game instance = new Game(10);
     private int numberOfPlayers;
     private ArrayList<ClientHandler> clientHandlers;
     private ArrayList<Player> players;
@@ -25,6 +25,9 @@ public class Game {
     private boolean hasMayor;
 
     private Game(int numberOfPlayers) {
+        if (numberOfPlayers < 4)
+            throw new IllegalArgumentException();
+
         this.numberOfPlayers = numberOfPlayers;
         players = new ArrayList<>();
         clientHandlers = new ArrayList<>();
@@ -311,6 +314,11 @@ public class Game {
 
         if (doctor == null || doctor.getRole().getTarget() != mainMafia.getRole().getTarget()) {
             Player victim = mainMafia.getRole().getTarget();
+            if (victim.getRole() instanceof Role.DieHard && ((Role.DieHard)victim.getRole()).getHearts() == 2) {
+                ((Role.DieHard)victim.getRole()).setHearts(1);
+                return;
+            }
+
             kill(victim);
             deadPlayers.add(victim);
         }
