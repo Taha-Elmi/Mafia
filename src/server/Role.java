@@ -1,14 +1,14 @@
 package server;
 
 public abstract class Role {
-    private int target;
+    private Player target;
     private boolean doneJob;
 
-    public int getTarget() {
+    public Player getTarget() {
         return target;
     }
 
-    public void setTarget(int target) {
+    public void setTarget(Player target) {
         this.target = target;
     }
 
@@ -27,7 +27,6 @@ public abstract class Role {
     public static class GodFather extends Role implements Mafia{
 
         public GodFather() {
-            setTarget(0);
             setDoneJob(false);
         }
 
@@ -51,7 +50,6 @@ public abstract class Role {
     public static class SimpleMafia extends Role implements Mafia{
 
         public SimpleMafia() {
-            setTarget(0);
             setDoneJob(false);
         }
 
@@ -84,23 +82,21 @@ public abstract class Role {
         }
     }
     public static class DrLecter extends Role implements Mafia{
-        private int survivor;
+        private Player survivor;
         private int numberOfRevivingHimself;
         private boolean doneReviving;
 
         public DrLecter() {
-            setTarget(0);
             setDoneJob(false);
             setDoneReviving(false);
-            survivor = 0;
             numberOfRevivingHimself = 1;
         }
 
-        public void setSurvivor(int survivor) {
+        public void setSurvivor(Player survivor) {
             this.survivor = survivor;
         }
 
-        public int getSurvivor() {
+        public Player getSurvivor() {
             return survivor;
         }
 
@@ -166,7 +162,6 @@ public abstract class Role {
         private int numberOfRevivingHimself;
 
         public Doctor() {
-            setTarget(0);
             setDoneJob(false);
             numberOfRevivingHimself = 1;
         }
@@ -206,7 +201,6 @@ public abstract class Role {
         int numberOfDetects;
 
         public Detective() {
-            setTarget(0);
             setDoneJob(false);
             numberOfDetects = 1;
         }
@@ -239,7 +233,6 @@ public abstract class Role {
     public static class Professional extends Role {
 
         public Professional() {
-            setTarget(0);
             setDoneJob(false);
         }
 
@@ -291,7 +284,6 @@ public abstract class Role {
     public static class Psychiatrist extends Role {
 
         public Psychiatrist() {
-            setTarget(0);
             setDoneJob(false);
         }
 

@@ -178,7 +178,7 @@ public class ClientHandler extends Thread{
                 int target = Integer.parseInt(text);
                 if (target <= 0 || target > Game.getInstance().countAlivePlayers())
                     throw new IndexOutOfBoundsException();
-                player.getRole().setTarget(target);
+                player.getRole().setTarget(Game.getInstance().findAlivePlayerByIndex(target));
                 Game.getInstance().mafiaChat(ConsoleColors.ANSI_PURPLE + player.getUsername() + " recommends: " +
                         Game.getInstance().findAlivePlayerByIndex(target).getUsername() + ConsoleColors.ANSI_RESET);
                 write("Done. Now try to sleep.");
@@ -210,7 +210,7 @@ public class ClientHandler extends Thread{
                         role.setNumberOfRevivingHimself(0);
                     }
 
-                    role.setSurvivor(survivor);
+                    role.setSurvivor(Game.getInstance().findAliveMafiaByIndex(survivor));
                     role.setDoneReviving(true);
                     write("OK.");
 
@@ -254,7 +254,7 @@ public class ClientHandler extends Thread{
                     role.setNumberOfRevivingHimself(0);
                 }
 
-                role.setTarget(target);
+                role.setTarget(Game.getInstance().findAlivePlayerByIndex(target));
                 write("Done. Now try to sleep.");
                 role.setDoneJob(true);
             } catch (NumberFormatException | IndexOutOfBoundsException e) {
@@ -301,7 +301,7 @@ public class ClientHandler extends Thread{
                     throw new IndexOutOfBoundsException();
 
                 write("Done. You'll see the result of your shot tomorrow :). You can sleep now.");
-                role.setTarget(target);
+                role.setTarget(Game.getInstance().findAlivePlayerByIndex(target));
                 role.setDoneJob(true);
             } catch (NumberFormatException | IndexOutOfBoundsException e) {
                 write("Invalid input. Enter the index of one of the players.");
@@ -322,7 +322,7 @@ public class ClientHandler extends Thread{
                     throw new IndexOutOfBoundsException();
 
                 Player psycho = Game.getInstance().findAlivePlayerByIndex(target);
-                psycho.setSilent(true);
+                role.setTarget(psycho);
                 write("Done, " + psycho.getUsername() + " will be silent tomorrow =]");
                 role.setDoneJob(true);
             } catch (NumberFormatException | IndexOutOfBoundsException e) {

@@ -280,10 +280,10 @@ public class Game {
      */
     private void resetPlayers() {
         for (Player player : players) {
-            player.getRole().setTarget(0);
+            player.getRole().setTarget(null);
             player.getRole().setDoneJob(false);
             if (player.getRole() instanceof Role.DrLecter) {
-                ((Role.DrLecter) player.getRole()).setSurvivor(0);
+                ((Role.DrLecter) player.getRole()).setSurvivor(null);
                 ((Role.DrLecter) player.getRole()).setDoneReviving(false);
             }
         }
@@ -295,19 +295,19 @@ public class Game {
      */
     private void processMafiaAction(ArrayList<Player> deadPlayers) {
         Player mainMafia = findRole(new Role.GodFather());
-        if (players == null)
+        if (mainMafia == null)
             mainMafia = findRole(new Role.DrLecter());
         if (mainMafia == null)
             mainMafia = findRole(new Role.SimpleMafia());
 
         //checks if the mafia have done their job or not
-        if (mainMafia.getRole().getTarget() == 0)
+        if (mainMafia.getRole().getTarget() == null)
             return;
 
         Player doctor = findRole(new Role.Doctor());
 
         if (doctor == null || doctor.getRole().getTarget() != mainMafia.getRole().getTarget()) {
-            Player victim = findAlivePlayerByIndex(mainMafia.getRole().getTarget());
+            Player victim = mainMafia.getRole().getTarget();
             kill(victim);
             deadPlayers.add(victim);
         }
@@ -322,13 +322,13 @@ public class Game {
         Player drLecter = findRole(new Role.DrLecter());
 
         //check if we have professional and if he has done his job
-        if (professional == null || professional.getRole().getTarget() == 0)
+        if (professional == null || professional.getRole().getTarget() == null)
             return;
 
-        Player victim = findAlivePlayerByIndex(professional.getRole().getTarget());
+        Player victim = professional.getRole().getTarget();
         if (victim.getRole() instanceof Role.Mafia) {
-            if (drLecter == null || ((Role.DrLecter) drLecter.getRole()).getSurvivor() == 0
-                    || findAliveMafiaByIndex(((Role.DrLecter) drLecter.getRole()).getSurvivor()) != victim) {
+            if (drLecter == null || ((Role.DrLecter) drLecter.getRole()).getSurvivor() == null
+                    || ((Role.DrLecter) drLecter.getRole()).getSurvivor() != victim) {
                 kill(victim);
                 deadPlayers.add(victim);
             }
@@ -345,10 +345,10 @@ public class Game {
     private void processPsychiatristAction() {
         Player psychiatrist = findRole(new Role.Psychiatrist());
 
-        if (psychiatrist == null || psychiatrist.getRole().getTarget() == 0)
+        if (psychiatrist == null || psychiatrist.getRole().getTarget() == null)
             return;
 
-        Player patient = findAlivePlayerByIndex(psychiatrist.getRole().getTarget());
+        Player patient = psychiatrist.getRole().getTarget();
         patient.setSilent(true);
         chat(ConsoleColors.ANSI_BLUE + "GOD: " + patient.getUsername() + " will be silent today." + ConsoleColors.ANSI_RESET);
     }
@@ -389,6 +389,15 @@ public class Game {
             if (clientHandler.getPlayer().isAlive())
                 clientHandler.getPlayer().getRole().nightAct(clientHandler);
         }
+        resetSilences();
+    }
+
+    /**
+     * It resets the isSilent field of every player
+     */
+    private void resetSilences() {
+        for (Player player : players)
+            player.setSilent(false);
     }
 
     /**
