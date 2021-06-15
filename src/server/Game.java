@@ -249,13 +249,34 @@ public class Game {
         }
     }
 
+    /**
+     * It will explain what happened last night.
+     * Who were killed
+     * Who got silent
+     * And give an inquiry if die-hard requested
+     */
     private void explainLastNight() {
         ArrayList<Player> deadPlayers = new ArrayList<>();
 
         processMafiaAction(deadPlayers);
         processProfessionalAction(deadPlayers);
+
+        if (deadPlayers.size() == 0)
+            chat(ConsoleColors.ANSI_BLUE + "GOD: We didn't lose anyone last night." + ConsoleColors.ANSI_RESET);
+        else {
+            chat(ConsoleColors.ANSI_BLUE + "GOD: We lost these players last night:" + ConsoleColors.ANSI_RESET);
+            for (Player player : deadPlayers)
+                chat(ConsoleColors.ANSI_RED + "\t" + player.getUsername() + ConsoleColors.ANSI_RESET);
+        }
+
+        processPsychiatristAction();
+        processDieHardAction();
     }
 
+    /**
+     * It will process the decision of the mafias and the decision of the doctor and make the changes.
+     * @param deadPlayers the ArrayList of players, to store the dead players in one place to declare them next morning.
+     */
     private void processMafiaAction(ArrayList<Player> deadPlayers) {
         Player mainMafia = findRole(new Role.GodFather());
         if (players == null)
@@ -276,6 +297,10 @@ public class Game {
         }
     }
 
+    /**
+     * It will process the decision of the professional and the decision of Dr.Lecter and make the changes.
+     * @param deadPlayers the ArrayList of players, to store the dead players in one place to declare them next morning.
+     */
     private void processProfessionalAction(ArrayList<Player> deadPlayers) {
         Player professional = findRole(new Role.Professional());
         Player drLecter = findRole(new Role.DrLecter());
@@ -297,8 +322,34 @@ public class Game {
 
     }
 
+    /**
+     * It will make a player silent due to the act of the psychiatrist.
+     */
     private void processPsychiatristAction() {
+        Player psychiatrist = findRole(new Role.Psychiatrist());
 
+        if (psychiatrist == null || psychiatrist.getRole().getTarget() == 0)
+            return;
+
+        Player patient = findAlivePlayerByIndex(psychiatrist.getRole().getTarget());
+        patient.setSilent(true);
+        chat(ConsoleColors.ANSI_BLUE + "GOD: " + patient.getUsername() + " will be silent today." + ConsoleColors.ANSI_RESET);
+    }
+
+    /**
+     * It will declare the role of dead players, if die-hard had requested.
+     */
+    private void processDieHardAction() {
+        Player dieHard = findRole(new Role.DieHard());
+
+        if (dieHard == null || !(((Role.DieHard)dieHard.getRole()).wantInquiry()))
+            return;
+
+        chat(ConsoleColors.ANSI_BLUE + "GOD: Die-Hard requested an inquiry last night. Here is the inquiry:" + ConsoleColors.ANSI_RESET);
+        for (Player player : players) {
+            if (!player.isAlive())
+                chat(ConsoleColors.ANSI_CYAN + "\t" + player.getRole().toString() + " is not alive." + ConsoleColors.ANSI_RESET);
+        }
     }
 
     /**
@@ -307,6 +358,7 @@ public class Game {
     private void dawn() {
         day++;
         chat(ConsoleColors.ANSI_YELLOW + "\n===============\nDay" + day + "\n===============" + ConsoleColors.ANSI_RESET);
+        explainLastNight();
         chat(ConsoleColors.ANSI_BLUE + "GOD: Wake Up. You can discuss now for 5 minute..." + ConsoleColors.ANSI_RESET);
         setState("day");
     }

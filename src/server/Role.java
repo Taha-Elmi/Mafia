@@ -341,7 +341,7 @@ public abstract class Role {
             this.wantInquiry = wantInquiry;
         }
 
-        public boolean WantInquiry() {
+        public boolean wantInquiry() {
             return wantInquiry;
         }
 
