@@ -150,52 +150,18 @@ public class ClientHandler extends Thread{
                 return;
             }
 
-            if (Game.getInstance().getState().equals("night-lecter") && player.getRole() instanceof Role.DrLecter) {
-                try {
-                    int survivor = Integer.parseInt(text);
-                    if (survivor <= 0 || survivor > Game.getInstance().countMafias())
-                        throw new IndexOutOfBoundsException();
-                    ((Role.DrLecter) player.getRole()).setSurvivor(survivor);
-
-                    write("OK, now you can recommend a player to the godfather by their index: ");
-                    int index = 1;
-                    for (ClientHandler ch : Game.getInstance().getClientHandlers()) {
-                        if (ch.getPlayer().isAlive()) {
-                            write(index + "- " + ConsoleColors.ANSI_GREEN + ch.getPlayer().getUsername() + ConsoleColors.ANSI_RESET);
-                            index++;
-                        }
-                    }
-
-                    Game.getInstance().setState("night");
-                } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                    write("Invalid input. Enter the index of one of the players.");
+            if (Game.getInstance().getState().equals("night")) {
+                String role = player.getRole().toString();
+                switch (role) {
+                    case "Godfather", "a Simple Mafia" -> mafiaNightAct(text);
+                    case "Dr.Lecter" -> drLecterNightAct(text);
+                    case "Doctor" -> doctorNightAct(text);
+                    case "Detective" -> detectiveNightAct(text);
+                    case "Professional" -> professionalNightAct(text);
+                    case "Psychiatrist" -> psychiatristNightAct(text);
+                    case "Die Hard" -> dieHardNightAct(text);
+                    default -> write("It's night...");
                 }
-                return;
-            }
-
-            if ((Game.getInstance().getState().equals("night") || Game.getInstance().getState().equals("night-lecter"))
-                && (player.getRole().canSetTarget())) {
-                try {
-                    int target = Integer.parseInt(text);
-                    if (target <= 0 || target > Game.getInstance().countAlivePlayers())
-                        throw new IndexOutOfBoundsException();
-                    player.getRole().setTarget(target);
-                    write("Your vote has been submitted. You can change it until the end of the night.");
-                } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                    write("Invalid input. Enter the index of one of the players.");
-                }
-                return;
-            }
-
-            if ((Game.getInstance().getState().equals("night-lecter") || Game.getInstance().getState().equals("nigth"))
-                    && player.getRole() instanceof Role.DieHard) {
-                dieHardNightAct(text);
-                return;
-            }
-
-            if (Game.getInstance().getState().equals("night-lecter") || Game.getInstance().getState().equals("night")) {
-                write("It's night...");
-                return;
             }
 
         }
