@@ -180,6 +180,14 @@ public abstract class Role {
             numberOfRevivingHimself = 1;
         }
 
+        public int getNumberOfRevivingHimself() {
+            return numberOfRevivingHimself;
+        }
+
+        public void setNumberOfRevivingHimself(int numberOfRevivingHimself) {
+            this.numberOfRevivingHimself = numberOfRevivingHimself;
+        }
+
         @Override
         public String toString() {
             return "Doctor";
@@ -187,6 +195,12 @@ public abstract class Role {
 
         @Override
         public void nightAct(ClientHandler clientHandler) {
+            //check if there is any player that he can save or not
+            if (Game.getInstance().countCitizens() == 1 && numberOfRevivingHimself == 0) {
+                clientHandler.write("Seems that you can't revive anyone :) Try to sleep.");
+                return;
+            }
+
             clientHandler.write("Save a person by choosing the appropriate index:");
             int index = 1;
             for (ClientHandler ch : Game.getInstance().getClientHandlers()) {

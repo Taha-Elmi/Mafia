@@ -297,7 +297,7 @@ public class Game {
      * it will count the number of alive citizens
      * @return number of alive citizens
      */
-    private int countCitizens() {
+    public int countCitizens() {
         int answer = 0;
         for (Player player : players) {
             if (!(player.getRole() instanceof Role.Mafia) && player.isAlive())

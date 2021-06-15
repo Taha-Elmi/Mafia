@@ -297,5 +297,35 @@ public class ClientHandler extends Thread{
                 write("Invalid input. Enter 1 if you want inquiry or 0 otherwise.");
             }
         }
+
+        private void doctorNightAct(String text) {
+            Role.Doctor role = (Role.Doctor) player.getRole();
+
+            if (role.isDoneJob()) {
+                write("You've done your job. Try to sleep.");
+                return;
+            }
+
+            try {
+                int target = Integer.parseInt(text);
+                if (target <= 0 || target > Game.getInstance().countAlivePlayers())
+                    throw new IndexOutOfBoundsException();
+
+                //check if the doctor is reviving himself for more than one time or not
+                if (Game.getInstance().findAlivePlayerByIndex(target) == player) {
+                    if (role.getNumberOfRevivingHimself() == 0) {
+                        write("You can't revive yourself because you've already done it once. Try to revive another mafia.");
+                        return;
+                    }
+                    role.setNumberOfRevivingHimself(0);
+                }
+
+                role.setTarget(target);
+                write("Done. Now try to sleep.");
+                role.setDoneJob(true);
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                write("Invalid input. Enter the index of one of the players.");
+            }
+        }
     }
 }
