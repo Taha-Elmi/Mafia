@@ -97,6 +97,18 @@ public class ClientHandler extends Thread{
         }
     }
 
+    /**
+     * It will close the socket
+     */
+    public void close() {
+        write("exit");
+        try {
+            socket.close();
+        } catch (IOException e) {
+            System.err.println("Couldn't close the socket.");
+        }
+    }
+
     private class ClientReader extends Thread {
 
         @Override
@@ -108,6 +120,14 @@ public class ClientHandler extends Thread{
                 } catch (IOException e) {
                     System.err.println("There was an error in getting data from the client.");
                 }
+
+                if (text.equals("exit")) {
+                    player.setAlive(false);
+                    close();
+                    Game.getInstance().chat(ConsoleColors.ANSI_RED + player.getUsername() + " has left the game." + ConsoleColors.ANSI_RESET);
+                    break;
+                }
+
                 processText(text);
             }
         }
@@ -117,6 +137,7 @@ public class ClientHandler extends Thread{
          * @param text input string received from the client
          */
         private void processText(String text) {
+
             if (!player.isAlive()) {
                 write("You're dead. You can't talk or do anything. You can just watch the rest of the game.");
                 return;

@@ -15,7 +15,7 @@ import java.util.Random;
  * @version 1
  */
 public class Game {
-    private static final Game instance = new Game(10);
+    private static final Game instance = new Game(6);
     private int numberOfPlayers;
     private ArrayList<ClientHandler> clientHandlers;
     private ArrayList<Player> players;
@@ -569,6 +569,17 @@ public class Game {
      */
     private void kill(Player victim) {
         victim.setAlive(false);
+
+        //finding the clientHandler of the player
+        ClientHandler victimClientHandler = null;
+        for (ClientHandler clientHandler : clientHandlers) {
+            if (clientHandler.getPlayer() == victim) {
+                victimClientHandler = clientHandler;
+                break;
+            }
+        }
+
+        victimClientHandler.write("You're dead now. You can exit the game by typing 'exit' or you will watch the remaining of the game.");
     }
 
     /**

@@ -17,12 +17,14 @@ public class Client {
     private static DataInputStream dataInputStream;
     private static DataOutputStream dataOutputStream;
     private static final Scanner scanner = new Scanner(System.in);
+    private static boolean running;
 
     public static void main(String[] args) {
         System.out.println("Hi, welcome to our Mafia Banquet :)))");
         while (!connectToServer());
         setName();
         setReady();
+        running = true;
 
         UserReader userReader = new UserReader();
         userReader.start();
@@ -110,6 +112,9 @@ public class Client {
             String text;
             while (true) {
                 text = scanner.nextLine();
+                if (!running)
+                    break;
+
                 try {
                     dataOutputStream.writeUTF(text);
                 } catch (IOException e) {
@@ -127,11 +132,15 @@ public class Client {
             while (true) {
                 try {
                     text = dataInputStream.readUTF();
+                    if (text.equals("exit"))
+                        break;
                 } catch (IOException e) {
                     System.err.println("There was an error in getting data from the server.");
                 }
                 System.out.println(text);
             }
+            running = false;
+            System.out.println("Press any key to exit.");
         }
     }
 }
