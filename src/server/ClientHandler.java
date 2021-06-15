@@ -327,5 +327,30 @@ public class ClientHandler extends Thread{
                 write("Invalid input. Enter the index of one of the players.");
             }
         }
+
+        private void detectiveNightAct(String text) {
+            Role.Detective role = (Role.Detective) player.getRole();
+
+            if (role.isDoneJob()) {
+                write("You've done your job. Try to sleep.");
+                return;
+            }
+
+            try {
+                int target = Integer.parseInt(text);
+                if (target <= 0 || target > Game.getInstance().countAlivePlayers())
+                    throw new IndexOutOfBoundsException();
+
+                Player suspect = Game.getInstance().findAlivePlayerByIndex(target);
+                if ((suspect.getRole() instanceof Role.Mafia) && !(suspect.getRole() instanceof Role.GodFather))
+                    write("Good job. Yes, he is one of the mafias.");
+                else
+                    write("Nope. He is one of the citizens.");
+
+                role.setDoneJob(true);
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                write("Invalid input. Enter the index of one of the players.");
+            }
+        }
     }
 }
