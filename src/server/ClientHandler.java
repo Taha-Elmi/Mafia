@@ -263,41 +263,6 @@ public class ClientHandler extends Thread{
             }
         }
 
-        private void dieHardNightAct(String text) {
-            Player player = Game.getInstance().findRole(new Role.DieHard());
-            Role.DieHard role = (Role.DieHard) player.getRole();
-
-            if (role.getInquiry() < 1) {
-                write("You're out of limit. You can't do anything. Try to sleep.");
-                return;
-            }
-
-            if (role.isDoneJob()) {
-                write("You've done your work. Try to sleep.");
-                return;
-            }
-
-            try {
-                int choice = Integer.parseInt(text);
-                if (choice != 0 && choice != 1)
-                    throw new IllegalArgumentException();
-
-                switch (choice) {
-                    case 1:
-                        role.setInquiry(role.getInquiry() - 1);
-                        role.setWantInquiry(true);
-                        role.setDoneJob(true);
-                        write("OK. We will have an inquiry tomorrow.");
-                        return;
-                    case 0:
-                        role.setDoneJob(true);
-                        write("OK.");
-                }
-            } catch (IllegalArgumentException e) {
-                write("Invalid input. Enter 1 if you want inquiry or 0 otherwise.");
-            }
-        }
-
         private void doctorNightAct(String text) {
             Role.Doctor role = (Role.Doctor) player.getRole();
 
@@ -352,5 +317,63 @@ public class ClientHandler extends Thread{
                 write("Invalid input. Enter the index of one of the players.");
             }
         }
+
+        private void professionalNightAct(String text) {
+            Role.Professional role = (Role.Professional) player.getRole();
+
+            if (role.isDoneJob()) {
+                write("You've done your job. Try to sleep.");
+                return;
+            }
+
+            try {
+                int target = Integer.parseInt(text);
+                if (target < 0 || target > Game.getInstance().countAlivePlayers())
+                    throw new IndexOutOfBoundsException();
+
+                write("Done. You'll see the result of your shot tomorrow :). You can sleep now.");
+                role.setTarget(target);
+                role.setDoneJob(true);
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                write("Invalid input. Enter the index of one of the players.");
+            }
+        }
+
+        private void dieHardNightAct(String text) {
+            Player player = Game.getInstance().findRole(new Role.DieHard());
+            Role.DieHard role = (Role.DieHard) player.getRole();
+
+            if (role.getInquiry() < 1) {
+                write("You're out of limit. You can't do anything. Try to sleep.");
+                return;
+            }
+
+            if (role.isDoneJob()) {
+                write("You've done your work. Try to sleep.");
+                return;
+            }
+
+            try {
+                int choice = Integer.parseInt(text);
+                if (choice != 0 && choice != 1)
+                    throw new IllegalArgumentException();
+
+                switch (choice) {
+                    case 1:
+                        role.setInquiry(role.getInquiry() - 1);
+                        role.setWantInquiry(true);
+                        role.setDoneJob(true);
+                        write("OK. We will have an inquiry tomorrow.");
+                        return;
+                    case 0:
+                        role.setDoneJob(true);
+                        write("OK.");
+                }
+            } catch (IllegalArgumentException e) {
+                write("Invalid input. Enter 1 if you want inquiry or 0 otherwise.");
+            }
+        }
+
+
     }
 }

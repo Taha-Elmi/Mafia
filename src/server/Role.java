@@ -261,7 +261,7 @@ public abstract class Role {
 
         @Override
         public void nightAct(ClientHandler clientHandler) {
-            clientHandler.write("you can detect a player by choosing the appropriate index:");
+            clientHandler.write("you can snipe a player by choosing the appropriate index, or refuse shooting with '0':");
             int index = 1;
             for (ClientHandler ch : Game.getInstance().getClientHandlers()) {
                 if (ch.getPlayer().isAlive()) {
