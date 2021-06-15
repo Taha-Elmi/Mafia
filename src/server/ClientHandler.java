@@ -339,6 +339,28 @@ public class ClientHandler extends Thread{
             }
         }
 
+        private void psychiatristNightAct(String text) {
+            Role.Psychiatrist role = (Role.Psychiatrist) player.getRole();
+
+            if (role.isDoneJob()) {
+                write("You've done your job. Try to sleep.");
+                return;
+            }
+
+            try {
+                int target = Integer.parseInt(text);
+                if (target <= 0 || target > Game.getInstance().countAlivePlayers())
+                    throw new IndexOutOfBoundsException();
+
+                Player psycho = Game.getInstance().findAlivePlayerByIndex(target);
+                psycho.setSilent(true);
+                write("Done, " + psycho.getUsername() + " will be silent tomorrow =]");
+                role.setDoneJob(true);
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                write("Invalid input. Enter the index of one of the players.");
+            }
+        }
+
         private void dieHardNightAct(String text) {
             Player player = Game.getInstance().findRole(new Role.DieHard());
             Role.DieHard role = (Role.DieHard) player.getRole();

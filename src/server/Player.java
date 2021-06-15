@@ -75,6 +75,14 @@ public class Player {
     }
 
     /**
+     * setter of the isSilent field
+     * @param silent the new value of the field
+     */
+    public void setSilent(boolean silent) {
+        isSilent = silent;
+    }
+
+    /**
      * setter of the isAlive field
      * @param alive the new value of the field
      */
