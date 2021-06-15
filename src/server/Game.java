@@ -249,13 +249,65 @@ public class Game {
         }
     }
 
+    private void explainLastNight() {
+        ArrayList<Player> deadPlayers = new ArrayList<>();
+
+        processMafiaAction(deadPlayers);
+        processProfessionalAction(deadPlayers);
+    }
+
+    private void processMafiaAction(ArrayList<Player> deadPlayers) {
+        Player mainMafia = findRole(new Role.GodFather());
+        if (players == null)
+            mainMafia = findRole(new Role.DrLecter());
+        if (mainMafia == null)
+            mainMafia = findRole(new Role.SimpleMafia());
+
+        //checks if the mafia have done their job or not
+        if (mainMafia.getRole().getTarget() == 0)
+            return;
+
+        Player doctor = findRole(new Role.Doctor());
+
+        if (doctor == null || doctor.getRole().getTarget() != mainMafia.getRole().getTarget()) {
+            Player victim = findAlivePlayerByIndex(mainMafia.getRole().getTarget());
+            kill(victim);
+            deadPlayers.add(victim);
+        }
+    }
+
+    private void processProfessionalAction(ArrayList<Player> deadPlayers) {
+        Player professional = findRole(new Role.Professional());
+        Player drLecter = findRole(new Role.DrLecter());
+
+        //check if we have professional and if he has done his job
+        if (professional == null || professional.getRole().getTarget() == 0)
+            return;
+
+        Player victim = findAlivePlayerByIndex(professional.getRole().getTarget());
+        if (victim.getRole() instanceof Role.Mafia) {
+            if (drLecter == null || drLecter.getRole().getTarget() == 0 || findAliveMafiaByIndex(drLecter.getRole().getTarget()) != victim) {
+                kill(victim);
+                deadPlayers.add(victim);
+            }
+        } else {
+            kill(professional);
+            deadPlayers.add(professional);
+        }
+
+    }
+
+    private void processPsychiatristAction() {
+
+    }
+
     /**
      * It will change the game state to "day" and do necessary things that have to be done in the beginning of a day.
      */
     private void dawn() {
         day++;
         chat(ConsoleColors.ANSI_YELLOW + "\n===============\nDay" + day + "\n===============" + ConsoleColors.ANSI_RESET);
-        chat(ConsoleColors.ANSI_BLUE + "GOD: You can discuss now for 5 minute..." + ConsoleColors.ANSI_RESET);
+        chat(ConsoleColors.ANSI_BLUE + "GOD: Wake Up. You can discuss now for 5 minute..." + ConsoleColors.ANSI_RESET);
         setState("day");
     }
 
