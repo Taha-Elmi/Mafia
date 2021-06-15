@@ -34,6 +34,9 @@ public class Game {
         hasMayor = false;
     }
 
+    /**
+     * the main method, which executes the game.
+     */
     public void run() {
         waitForClients(2000);
         while (!checkIfReady());

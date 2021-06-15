@@ -105,6 +105,11 @@ public class Client {
         System.out.println("Nice! Now wait for other players to get ready and then the game will begin...");
     }
 
+    /**
+     * This thread will always read from the scanner.
+     *
+     * @author Taha Elmi
+     */
     private static class UserReader extends Thread {
 
         @Override
@@ -124,6 +129,9 @@ public class Client {
         }
     }
 
+    /**
+     * This thread will always read from the server.
+     */
     private static class ServerReader extends Thread {
 
         @Override

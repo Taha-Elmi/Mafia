@@ -8,19 +8,16 @@ package server;
  */
 public class Player {
     private String username;
-    private boolean isActive;
     private boolean isAlive;
     private boolean isSilent;
     private boolean isReady;
-    private int hearts;
     private Role role;
     private int vote;
     private int inactivity;
 
     public Player(String name) {
-        isActive = isAlive = true;
+        isAlive = true;
         isSilent = isReady = false;
-        hearts = 1;
         username = name;
         vote = 0;
         inactivity = 0;
@@ -130,6 +127,10 @@ public class Player {
         return role;
     }
 
+    /**
+     * setter of the role field
+     * @param role the new value of the role field
+     */
     public void setRole(Role role) {
         this.role = role;
     }

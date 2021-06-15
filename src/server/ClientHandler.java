@@ -109,6 +109,11 @@ public class ClientHandler extends Thread{
         }
     }
 
+    /**
+     * This thread will always read data from the client.
+     *
+     * @author Taha Elmi
+     */
     private class ClientReader extends Thread {
 
         @Override

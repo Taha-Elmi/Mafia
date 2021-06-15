@@ -1,29 +1,64 @@
 package server;
 
+/**
+ * This abstract class is extended to different roles of the game.
+ *
+ * @author Taha Elmi
+ */
 public abstract class Role {
     private Player target;
     private boolean doneJob;
 
+    /**
+     * getter of the target field.
+     * @return the target field
+     */
     public Player getTarget() {
         return target;
     }
 
+    /**
+     * setter of the target field.
+     * @param target the new value of the target field.
+     */
     public void setTarget(Player target) {
         this.target = target;
     }
 
+    /**
+     * setter of the doneJob field
+     * @param doneJob the new value of the doneJob field
+     */
     public void setDoneJob(boolean doneJob) {
         this.doneJob = doneJob;
     }
 
+    /**
+     * getter of the doneJob field
+     * @return the value of the doneJob field
+     */
     public boolean isDoneJob() {
         return doneJob;
     }
 
+    /**
+     * This is a helping interface so that we can determine that a role is a part of mafia or not.
+     *
+     * @author Taha Elmi
+     */
     public interface Mafia {}
 
+    /**
+     * a method which will be executed every night and print needed things on players screens.
+     * @param clientHandler the clientHandler
+     */
     public abstract void nightAct(ClientHandler clientHandler);
 
+    /**
+     * implements the Godfather role
+     *
+     * @author Taha Elmi
+     */
     public static class GodFather extends Role implements Mafia{
 
         public GodFather() {
@@ -47,6 +82,12 @@ public abstract class Role {
             }
         }
     }
+
+    /**
+     * implements the Simple Mafia role
+     *
+     * @author Taha Elmi
+     */
     public static class SimpleMafia extends Role implements Mafia{
 
         public SimpleMafia() {
@@ -81,6 +122,12 @@ public abstract class Role {
             }
         }
     }
+
+    /**
+     * implements Dr.Lecter role
+     *
+     * @author Taha Elmi
+     */
     public static class DrLecter extends Role implements Mafia{
         private Player survivor;
         private int numberOfRevivingHimself;
@@ -158,6 +205,12 @@ public abstract class Role {
 
     }
 
+
+    /**
+     * implements the Doctor role
+     *
+     * @author Taha Elmi
+     */
     public static class Doctor extends Role {
         private int numberOfRevivingHimself;
 
@@ -197,6 +250,12 @@ public abstract class Role {
             }
         }
     }
+
+    /**
+     * implements the Detective role
+     *
+     * @author Taha Elmi
+     */
     public static class Detective extends Role {
         int numberOfDetects;
 
@@ -230,6 +289,12 @@ public abstract class Role {
             }
         }
     }
+
+    /**
+     * implements the Professional role
+     *
+     * @author Taha Elmi
+     */
     public static class Professional extends Role {
 
         public Professional() {
@@ -253,6 +318,12 @@ public abstract class Role {
             }
         }
     }
+
+    /**
+     * implements the Simple Citizen role
+     *
+     * @author Taha Elmi
+     */
     public static class SimpleCitizen extends Role {
 
         public SimpleCitizen() {
@@ -267,6 +338,12 @@ public abstract class Role {
         @Override
         public void nightAct(ClientHandler clientHandler) {}
     }
+
+    /**
+     * implements the Mayor role
+     *
+     * @author Taha Elmi
+     */
     public static class Mayor extends Role {
         private boolean cancel;
 
@@ -291,6 +368,12 @@ public abstract class Role {
         @Override
         public void nightAct(ClientHandler clientHandler) {}
     }
+
+    /**
+     * implements the Psychiatrist role
+     *
+     * @author Taha Elmi
+     */
     public static class Psychiatrist extends Role {
 
         public Psychiatrist() {
@@ -314,14 +397,30 @@ public abstract class Role {
             }
         }
     }
+
+    /**
+     * implements the DieHard role
+     *
+     * @author Taha Elmi
+     */
     public static class DieHard extends Role {
         private boolean wantInquiry;
         private int inquiry;
+        private int hearts;
 
         public DieHard() {
             setDoneJob(false);
             wantInquiry = false;
             inquiry = 2;
+            hearts = 2;
+        }
+
+        public int getHearts() {
+            return hearts;
+        }
+
+        public void setHearts(int hearts) {
+            this.hearts = hearts;
         }
 
         public void setWantInquiry(boolean wantInquiry) {
